@@ -81,8 +81,6 @@ hsi/
 │   └── balrog_babaisai/
 ├── godel_evolution_init/    # Frozen meta-evolver anchor (select_seed/select_commit/select_best + strategies/)
 ├── benchmark_config_goal/   # Per-suite config.yaml + goal.md
-├── reported_results/        # 13 final runs feeding the paper tables + setup_*.md + trajectory plots
-├── baseline_results/        # Init-harness baselines (DeepSeek-V4-Flash)
 ├── scripts/
 │   ├── download_balrog_data.py
 │   └── eval_harness_snapshot.py
