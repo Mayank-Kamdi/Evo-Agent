@@ -16,25 +16,35 @@
 
   <style>
     /* -------------------------------------------------------------
-       DESIGN SYSTEM & CSS VARIABLES
+       DESIGN SYSTEM & CSS VARIABLES (Evo-Agent Frost Blue Palette)
+       Palette: #F7FBFC, #D6E6F2, #B9D7EA, #769FCD
        ------------------------------------------------------------- */
     :root {
-      --bg-main: #080D18;
-      --bg-surface: #101827;
-      --bg-card: #131E33;
-      --bg-card-hover: #192640;
-      --border-subtle: #1E2D4A;
-      --border-highlight: #2A3E66;
-      --primary-accent: #508BFF;
-      --primary-glow: rgba(80, 139, 255, 0.25);
-      --secondary-accent: #9274FF;
-      --highlight-cyan: #5CE1E6;
-      --accent-danger: #FF5A5F;
+      /* Deep modern research lab background with frosty undertones */
+      --bg-main: #060A12;
+      --bg-surface: #0B1322;
+      --bg-card: #101B2E;
+      --bg-card-hover: #16243D;
+
+      /* User Requested Color Palette */
+      --palette-ice: #F7FBFC;
+      --palette-sky: #D6E6F2;
+      --palette-powder: #B9D7EA;
+      --palette-denim: #769FCD;
+
+      /* Design Tokens Mapped to Palette */
+      --border-subtle: rgba(185, 215, 234, 0.22);
+      --border-highlight: rgba(118, 159, 205, 0.5);
+      --primary-accent: #769FCD;
+      --primary-glow: rgba(118, 159, 205, 0.35);
+      --secondary-accent: #B9D7EA;
+      --highlight-cyan: #D6E6F2;
+      --accent-danger: #FF6B6B;
       --accent-warning: #FFB74D;
-      --accent-success: #00E676;
-      --text-main: #F1F5FC;
-      --text-muted: #9BA9BC;
-      --text-dim: #627289;
+      --accent-success: #4ECCA3;
+      --text-main: #F7FBFC;
+      --text-muted: #B9D7EA;
+      --text-dim: #7997B8;
       --font-heading: 'Space Grotesk', -apple-system, sans-serif;
       --font-body: 'Inter', -apple-system, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
@@ -196,25 +206,27 @@
       border: none;
     }
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary-accent), #366FE0);
-      color: #FFF;
-      box-shadow: 0 4px 20px var(--primary-glow);
+      background: linear-gradient(135deg, var(--palette-denim) 0%, #5077A3 100%);
+      color: var(--palette-ice);
+      box-shadow: 0 4px 20px rgba(118, 159, 205, 0.4);
+      border: 1px solid rgba(247, 251, 252, 0.25);
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, #6298FF, #4079EC);
-      box-shadow: 0 6px 24px rgba(80, 139, 255, 0.4);
+      background: linear-gradient(135deg, #87AFDD 0%, #6087B3 100%);
+      box-shadow: 0 6px 26px rgba(118, 159, 205, 0.6);
       transform: translateY(-2px);
-      color: #FFF;
+      color: #FFFFFF;
     }
     .btn-secondary {
-      background: var(--bg-surface);
-      color: var(--text-main);
-      border: 1px solid var(--border-highlight);
+      background: rgba(185, 215, 234, 0.08);
+      color: var(--palette-sky);
+      border: 1px solid rgba(185, 215, 234, 0.28);
     }
     .btn-secondary:hover {
-      background: var(--border-subtle);
-      border-color: var(--primary-accent);
+      background: rgba(185, 215, 234, 0.16);
+      border-color: var(--palette-denim);
       transform: translateY(-2px);
+      color: var(--palette-ice);
     }
     .badge {
       display: inline-flex;
@@ -229,14 +241,14 @@
       letter-spacing: 0.04em;
     }
     .badge-primary {
-      background: rgba(80, 139, 255, 0.12);
-      border: 1px solid rgba(80, 139, 255, 0.35);
-      color: var(--primary-accent);
+      background: rgba(118, 159, 205, 0.15);
+      border: 1px solid rgba(118, 159, 205, 0.4);
+      color: var(--palette-sky);
     }
     .badge-cyan {
-      background: rgba(92, 225, 230, 0.12);
-      border: 1px solid rgba(92, 225, 230, 0.35);
-      color: var(--highlight-cyan);
+      background: rgba(214, 230, 242, 0.12);
+      border: 1px solid rgba(214, 230, 242, 0.35);
+      color: var(--palette-ice);
     }
     .badge-warning {
       background: rgba(255, 183, 77, 0.15);
@@ -893,28 +905,31 @@
     }
     .scenario-picker {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
     }
     .scenario-btn {
       padding: 9px 18px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
+      background: rgba(16, 27, 46, 0.7);
+      border: 1px solid rgba(185, 215, 234, 0.22);
       border-radius: var(--radius-md);
-      color: var(--text-muted);
-      font-size: 0.88rem;
+      color: var(--palette-powder);
+      font-size: 0.86rem;
       font-weight: 500;
       cursor: pointer;
       transition: var(--transition);
     }
     .scenario-btn:hover {
-      color: var(--text-main);
-      border-color: var(--border-highlight);
+      color: var(--palette-ice);
+      border-color: var(--palette-denim);
+      background: rgba(118, 159, 205, 0.12);
     }
     .scenario-btn.active {
-      background: rgba(80, 139, 255, 0.15);
-      border-color: var(--primary-accent);
-      color: #FFF;
+      background: rgba(118, 159, 205, 0.22);
+      border-color: var(--palette-denim);
+      color: var(--palette-ice);
       font-weight: 600;
+      box-shadow: 0 0 14px rgba(118, 159, 205, 0.3);
     }
     .sim-steps-track {
       display: grid;
@@ -1324,7 +1339,7 @@
         </div>
         <div style="display:flex; flex-direction:column; line-height:1.2;">
           <span style="font-weight:700; font-size:1.15rem; color:var(--text-light); letter-spacing:-0.02em;">Evo-Agent</span>
-          <span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono); letter-spacing:0.02em;">Confidence-Aware HSI</span>
+          <span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono); letter-spacing:0.02em;">Confidence-Aware Self-Improving Agents</span>
         </div>
       </a>
 
@@ -1361,7 +1376,7 @@
         </div>
         <h1 class="hero-title"><span style="color:var(--primary-accent);">Evo-Agent:</span> Making Self-Improving AI Agents More Reliable.</h1>
         <p class="hero-subtitle">
-          Extending Hierarchical Self-Improvement (HSI) with dynamic feedback reliability estimation, uncertainty-aware harness evolution, and regression-preventing validation gates.
+          Extending Hierarchical Self-Improvement into Evo-Agent with dynamic feedback reliability estimation, uncertainty-aware harness evolution, and regression-preventing validation gates.
         </p>
 
         <!-- Authors & Supervision Hero Block -->
@@ -1552,9 +1567,9 @@
     <div class="container">
       <div class="section-header">
         <span class="badge badge-primary section-tag">Foundation</span>
-        <h2 class="section-title">The Original HSI Framework</h2>
+        <h2 class="section-title">Evo-Agent Foundation: Hierarchical Architecture</h2>
         <p class="section-desc">
-          Hierarchical Self-Improvement operates across three layered scopes around a single frozen LLM backbone (DeepSeek-V4-Flash / GLM), separating code execution from harness evolution.
+          Evo-Agent operates across three layered scopes around a single frozen LLM backbone (DeepSeek-V4-Flash / GLM), separating code execution from harness evolution.
         </p>
       </div>
 
@@ -1606,7 +1621,7 @@
         <div>
           <strong style="color: #FFF;">Crucial Invariant: Zero Backbone Model Weight Changes</strong>
           <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 2px;">
-            HSI never trains, finetunes, or modifies the weights of the underlying LLM. Self-improvement is strictly confined to evolving the agent's Python code scaffolding and task harness.
+            Evo-Agent never trains, finetunes, or modifies the weights of the underlying LLM. Self-improvement is strictly confined to evolving the agent's Python code scaffolding and task harness.
           </p>
         </div>
       </div>
@@ -1749,7 +1764,7 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
         <span class="badge badge-primary section-tag">Modular Implementation</span>
         <h2 class="section-title">Core Research Modules</h2>
         <p class="section-desc">
-          Packaged into <code>src/react_loop/reliability/</code> to guarantee strict backwards compatibility with original HSI runs.
+          Packaged into <code>src/react_loop/reliability/</code> to guarantee strict backwards compatibility with original baseline runs.
         </p>
       </div>
 
@@ -1933,9 +1948,13 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
       <div class="sim-card">
         <div class="sim-controls">
           <div class="scenario-picker">
-            <button class="scenario-btn active" onclick="setScenario('reliable', this)">Scenario 1: Reliable Feedback</button>
-            <button class="scenario-btn" onclick="setScenario('incomplete', this)">Scenario 2: Incomplete Feedback</button>
-            <button class="scenario-btn" onclick="setScenario('regression', this)">Scenario 3: Regression Detected</button>
+            <button class="scenario-btn active" onclick="setScenario('reliable', this)">1: High-Confidence Pass</button>
+            <button class="scenario-btn" onclick="setScenario('incomplete', this)">2: Incomplete Telemetry</button>
+            <button class="scenario-btn" onclick="setScenario('regression', this)">3: Regression Detected</button>
+            <button class="scenario-btn" onclick="setScenario('variance', this)">4: High-Variance Fluke</button>
+            <button class="scenario-btn" onclick="setScenario('rollback', this)">5: Runtime Bug Rollback</button>
+            <button class="scenario-btn" onclick="setScenario('kg_pruning', this)">6: KG Negative Pruning</button>
+            <button class="scenario-btn" onclick="setScenario('meta_convergence', this)">7: Meta-Convergence</button>
           </div>
           <button class="btn btn-primary" id="btnRunSim" onclick="runSimulation()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -2001,7 +2020,7 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
         <span class="badge badge-warning section-tag">Evaluation Suite</span>
         <h2 class="section-title">Experimental Research Dashboard</h2>
         <p class="section-desc">
-          Planned benchmarks comparing static harnesses, baseline HSI, and the full confidence-aware extension.
+          Planned benchmarks comparing static harnesses, baseline Evo-Agent, and the full confidence-aware extension.
         </p>
       </div>
 
@@ -2020,7 +2039,7 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
         <div class="stat-card">
           <div class="stat-label"><span>Harmful Acceptance</span> <span class="badge badge-cyan">Safety</span></div>
           <div class="stat-val">4.2%</div>
-          <div class="stat-delta delta-pos">-68% vs Original HSI (13.5%)</div>
+          <div class="stat-delta delta-pos">-68% vs Standard Baseline (13.5%)</div>
         </div>
         <div class="stat-card">
           <div class="stat-label"><span>Mean LCB Reward</span> <span class="badge badge-primary">z = 0.5</span></div>
@@ -2084,7 +2103,7 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
               <td>12.4s</td>
             </tr>
             <tr>
-              <td class="table-method-name">B. Original HSI (Meta-On)</td>
+              <td class="table-method-name">B. Standard Baseline (Meta-On)</td>
               <td>81.3%</td>
               <td>0.825</td>
               <td>0.773</td>
@@ -2094,7 +2113,7 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
               <td>18.2m</td>
             </tr>
             <tr>
-              <td class="table-method-name">C. HSI + Reliability Estimator</td>
+              <td class="table-method-name">C. Evo-Agent + Reliability Estimator</td>
               <td>82.4%</td>
               <td>0.831</td>
               <td>0.789</td>
@@ -2104,7 +2123,7 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
               <td>19.5m</td>
             </tr>
             <tr>
-              <td class="table-method-name">D. HSI + Regression Gate</td>
+              <td class="table-method-name">D. Evo-Agent + Regression Gate</td>
               <td>83.7%</td>
               <td>0.840</td>
               <td>0.801</td>
@@ -2207,7 +2226,7 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
         <!-- Phase 1 -->
         <div class="roadmap-phase in-progress">
           <span class="badge badge-cyan phase-badge">Phase 1 • In Progress</span>
-          <div class="phase-title">HSI Baseline</div>
+          <div class="phase-title">Evo-Agent Baseline</div>
           <ul class="phase-items">
             <li>Audit repository architecture</li>
             <li>Identify integration points</li>
@@ -2667,30 +2686,56 @@ persist_harness_history(iteration, seq, code_hash);`
 
       // Step 1: Task Run
       setStepActive(1);
-      logMsg('[STEP 1]', 'Dispatching task <code>babyai/goto</code> across 5 test episodes...');
-      await delay(600);
+      if (currentScenario === 'variance') {
+        logMsg('[STEP 1]', 'Dispatching <code>babyai/boss_level</code> across 5 initial stochastic episodes...');
+      } else if (currentScenario === 'rollback') {
+        logMsg('[STEP 1]', 'Dispatching execution trial for candidate harness with mutated planning recursion...');
+      } else if (currentScenario === 'kg_pruning') {
+        logMsg('[STEP 1]', 'Initiating rollout on <code>crafter/reach_milestone</code> under ReAct agent loop...');
+      } else if (currentScenario === 'meta_convergence') {
+        logMsg('[STEP 1]', 'Executing full multi-suite benchmark (BabyAI, Crafter, TextWorld) across 50 seeds...');
+      } else {
+        logMsg('[STEP 1]', 'Dispatching task <code>babyai/goto</code> across 5 test episodes...');
+      }
+      await delay(550);
 
       // Step 2: Telemetry
       setStepActive(2);
       if (currentScenario === 'incomplete') {
         logMsg('[STEP 2]', 'Telemetry received: 2 of 5 episodes timed out. Trace length: 1,240 tokens.', '#FFB74D');
+      } else if (currentScenario === 'variance') {
+        logMsg('[STEP 2]', 'Telemetry received: Rewards: [1.0, 0.0, 1.0, 0.0, 0.2]. Mean = 0.440 (High Variance).', '#B9D7EA');
+      } else if (currentScenario === 'rollback') {
+        logMsg('[STEP 2]', 'Telemetry anomaly: Runtime process reported exception in subprocess worker.', '#FF6B6B');
+      } else if (currentScenario === 'kg_pruning') {
+        logMsg('[STEP 2]', 'Telemetry trace captured: Evolver proposing greedy retry loop pattern.', '#D6E6F2');
+      } else if (currentScenario === 'meta_convergence') {
+        logMsg('[STEP 2]', 'Telemetry received: 50 of 50 episodes completed with 0 environment errors.', '#D6E6F2');
       } else {
         logMsg('[STEP 2]', 'Telemetry received: 5 of 5 episodes completed. Recorded avg_progression = 0.8000.');
       }
-      await delay(600);
+      await delay(550);
 
-      // Step 3: Reliability
+      // Step 3: Reliability Estimator
       setStepActive(3);
       if (currentScenario === 'reliable') {
-        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=1.0, Variance σ=0.041, HashVerified=TRUE → R(E) = 0.940 (HIGH).', '#5CE1E6');
+        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=1.0, Variance σ=0.041, HashVerified=TRUE → R(E) = 0.940 (HIGH).', '#769FCD');
       } else if (currentScenario === 'incomplete') {
-        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=0.40 (Episodes missing), σ=0.420 → R(E) = 0.412 (UNRELIABLE).', '#FF5A5F');
+        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=0.40 (Episodes missing), σ=0.420 → R(E) = 0.412 (UNRELIABLE).', '#FF6B6B');
+      } else if (currentScenario === 'variance') {
+        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=1.0, σ=0.490 → R(E) = 0.540 [FLAG: HIGH_VARIANCE_WARNING].', '#FFB74D');
+      } else if (currentScenario === 'rollback') {
+        logMsg('[STEP 3]', 'Reliability Estimator: Process monitor intercepted <code>RecursionError</code> in plan parser.', '#FF6B6B');
+      } else if (currentScenario === 'kg_pruning') {
+        logMsg('[STEP 3]', 'Reliability Estimator: Querying Knowledge Graph → <code>KG.query_refuted("retry_loop")</code>.', '#B9D7EA');
+      } else if (currentScenario === 'meta_convergence') {
+        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=1.0, Brier=0.018, LCB=0.924 → R(E) = 0.985 (CONVERGED).', '#769FCD');
       } else {
-        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=1.0, σ=0.090, HashVerified=TRUE → R(E) = 0.880 (ADEQUATE).', '#5CE1E6');
+        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=1.0, σ=0.090, HashVerified=TRUE → R(E) = 0.880 (ADEQUATE).', '#D6E6F2');
       }
-      await delay(700);
+      await delay(650);
 
-      // Step 4: Controller
+      // Step 4: Controller Policy Decision
       setStepActive(4);
       if (currentScenario === 'incomplete') {
         logMsg('[STEP 4]', 'Controller Decision: REQUEST_MORE_EVIDENCE. R(E) < 0.70 threshold. Mutating harness blocked.', '#FFB74D');
@@ -2702,39 +2747,81 @@ persist_harness_history(iteration, seq, code_hash);`
         btn.style.opacity = '1';
         isSimRunning = false;
         return;
+      } else if (currentScenario === 'variance') {
+        logMsg('[STEP 4]', 'Controller Decision: ADAPTIVE_MONTE_CARLO. Scaling sample depth κ from 5 to 15 random seeds.', '#B9D7EA');
+      } else if (currentScenario === 'rollback') {
+        logMsg('[STEP 4]', 'Controller Decision: EMERGENCY_ABORT. Harness execution crashed with unhandled exception.', '#FF6B6B');
+      } else if (currentScenario === 'kg_pruning') {
+        logMsg('[STEP 4]', 'Controller Decision: PRUNE_NEGATIVE_TRAJECTORY. Pattern previously refuted in Iteration #2.', '#FFB74D');
+      } else if (currentScenario === 'meta_convergence') {
+        logMsg('[STEP 4]', 'Controller Decision: CERTIFY_SOVEREIGN_CONVERGENCE. LCB exceeds deployment target threshold 0.900.', '#769FCD');
       } else {
         logMsg('[STEP 4]', 'Controller Decision: ALLOW_EVOLUTION. High evidence reliability confirmed.');
       }
       await delay(600);
 
-      // Step 5: Candidate H'
+      // Step 5: Candidate H' or Adaptation
       setStepActive(5);
-      logMsg('[STEP 5]', 'ReAct Evolver generated candidate H\' [code_hash: 4f8b1c2]. Edits: prompts.py (system prompt refinement).');
+      if (currentScenario === 'variance') {
+        logMsg('[STEP 5]', 'Monte Carlo sampling complete: True mean drops from 0.440 to 0.210. Initial score was an environment fluke!');
+      } else if (currentScenario === 'rollback') {
+        logMsg('[STEP 5]', 'Invoking Automated Rollback Checkpointing: Purging Python sys.modules & executing atomic git restore.');
+      } else if (currentScenario === 'kg_pruning') {
+        logMsg('[STEP 5]', 'Injecting negative feedback constraint into evolver prompt: Disallowing recursive retry loops.');
+      } else if (currentScenario === 'meta_convergence') {
+        logMsg('[STEP 5]', 'Meta-Evolver freezing exploration policy: Tagging production candidate release snapshot <code>v1.0.0-verified</code>.');
+      } else {
+        logMsg('[STEP 5]', 'ReAct Evolver generated candidate H\' [code_hash: 4f8b1c2]. Edits: prompts.py (system prompt refinement).');
+      }
       await delay(600);
 
       // Step 6: Paired Validation Gate
       setStepActive(6);
       if (currentScenario === 'reliable') {
         logMsg('[STEP 6]', 'Running paired validation: Candidate H\' vs Incumbent H₀ on identical 5 seeds...');
-        await delay(500);
-        logMsg('[STEP 6]', 'Paired outcome: H\' mean = 0.860, H₀ mean = 0.800 (Δ = +0.060, regressions = 0).', '#00E676');
+        await delay(450);
+        logMsg('[STEP 6]', 'Paired outcome: H\' mean = 0.860, H₀ mean = 0.800 (Δ = +0.060, regressions = 0).', '#4ECCA3');
       } else if (currentScenario === 'regression') {
         logMsg('[STEP 6]', 'Running paired validation: Candidate H\' vs Incumbent H₀ on identical 5 seeds...');
-        await delay(500);
-        logMsg('[STEP 6]', 'REGRESSION DETECTED on task #4: H\'=0.200 vs H₀=0.800 (Δ = -0.600 < tolerance -0.05).', '#FF5A5F');
+        await delay(450);
+        logMsg('[STEP 6]', 'REGRESSION DETECTED on task #4: H\'=0.200 vs H₀=0.800 (Δ = -0.600 < tolerance -0.05).', '#FF6B6B');
+      } else if (currentScenario === 'variance') {
+        logMsg('[STEP 6]', 'Regression gate evaluation: Fluke detected before code commit. Blocking promotion to protect incumbent.', '#FFB74D');
+      } else if (currentScenario === 'rollback') {
+        logMsg('[STEP 6]', 'Verifying clean rollback: Disk byte hashes match H₀ incumbent. Fresh import test passed with 0 leaks.', '#769FCD');
+      } else if (currentScenario === 'kg_pruning') {
+        logMsg('[STEP 6]', 'Evolver re-routed exploration toward memory summarization. Knowledge Graph branch updated.', '#B9D7EA');
+      } else if (currentScenario === 'meta_convergence') {
+        logMsg('[STEP 6]', 'Held-out test split validation (unseen 20% tasks): Test progression = 0.982 ± 0.024 across all seeds.', '#4ECCA3');
       }
-      await delay(700);
+      await delay(650);
 
       // Step 7: Final Outcome
       setStepActive(7);
       if (currentScenario === 'reliable') {
         badge.className = 'badge badge-success';
         badge.innerText = 'CANDIDATE ACCEPTED';
-        logMsg('[OUTCOME]', 'Candidate H\' successfully promoted to Incumbent! Git commit created and Knowledge Graph updated.', '#00E676');
+        logMsg('[OUTCOME]', 'Candidate H\' successfully promoted to Incumbent! Git commit created and Knowledge Graph updated.', '#4ECCA3');
+      } else if (currentScenario === 'variance') {
+        badge.className = 'badge badge-warning';
+        badge.innerText = 'FLUKE PREVENTED';
+        logMsg('[OUTCOME]', 'Stochastic fluke intercepted by Monte Carlo validation. Incumbent H₀ protected from degradation.', '#FFB74D');
+      } else if (currentScenario === 'rollback') {
+        badge.className = 'badge badge-danger';
+        badge.innerText = 'ZERO-LEAK ROLLBACK';
+        logMsg('[OUTCOME]', 'Crash isolated! Automated rollback restored H₀ cleanly. Failure diagnostics logged to BOOTSTRAP.md.', '#FF6B6B');
+      } else if (currentScenario === 'kg_pruning') {
+        badge.className = 'badge badge-cyan';
+        badge.innerText = 'TRAJECTORY PRUNED';
+        logMsg('[OUTCOME]', 'Duplicate refuted strategy pruned! Saved 14,000 model thinking tokens and refocused search space.', '#D6E6F2');
+      } else if (currentScenario === 'meta_convergence') {
+        badge.className = 'badge badge-success';
+        badge.innerText = 'SOVEREIGN COMMIT TAGGED';
+        logMsg('[OUTCOME]', 'Sovereign harness convergence achieved! Release snapshot signed and validated on unseen splits.', '#4ECCA3');
       } else {
         badge.className = 'badge badge-danger';
         badge.innerText = 'CANDIDATE REJECTED (ROLLBACK)';
-        logMsg('[OUTCOME]', 'Candidate H\' REJECTED by Regression Gate. Automated rollback to Incumbent H₀ executed.', '#FF5A5F');
+        logMsg('[OUTCOME]', 'Candidate H\' REJECTED by Regression Gate. Automated rollback to Incumbent H₀ executed.', '#FF6B6B');
       }
 
       btn.disabled = false;
@@ -2755,18 +2842,18 @@ persist_harness_history(iteration, seq, code_hash);`
             labels: ['Init (t=0)', 'Iter 1', 'Iter 2', 'Iter 3', 'Iter 4', 'Iter 5'],
             datasets: [
               {
-                label: 'Proposed (Full Extension)',
+                label: 'Full Evo-Agent',
                 data: [0.38, 0.54, 0.69, 0.77, 0.80, 0.812],
-                borderColor: '#5CE1E6',
-                backgroundColor: 'rgba(92, 225, 230, 0.1)',
+                borderColor: '#769FCD',
+                backgroundColor: 'rgba(118, 159, 205, 0.18)',
                 borderWidth: 2.5,
                 fill: true,
                 tension: 0.3
               },
               {
-                label: 'Original HSI (Meta-On)',
+                label: 'Standard Baseline (Meta-On)',
                 data: [0.38, 0.49, 0.63, 0.71, 0.74, 0.773],
-                borderColor: '#508BFF',
+                borderColor: '#B9D7EA',
                 borderWidth: 2,
                 borderDash: [5, 5],
                 tension: 0.3
@@ -2774,7 +2861,7 @@ persist_harness_history(iteration, seq, code_hash);`
               {
                 label: 'Static Baseline',
                 data: [0.38, 0.38, 0.38, 0.38, 0.38, 0.38],
-                borderColor: '#627289',
+                borderColor: '#7997B8',
                 borderWidth: 1.5,
                 tension: 0
               }
@@ -2785,19 +2872,19 @@ persist_harness_history(iteration, seq, code_hash);`
             maintainAspectRatio: false,
             plugins: {
               legend: {
-                labels: { color: '#9BA9BC', font: { family: 'Inter', size: 11 } }
+                labels: { color: '#D6E6F2', font: { family: 'Inter', size: 11 } }
               }
             },
             scales: {
               x: {
-                grid: { color: '#1E2D4A' },
-                ticks: { color: '#9BA9BC', font: { family: 'JetBrains Mono', size: 10 } }
+                grid: { color: 'rgba(185, 215, 234, 0.12)' },
+                ticks: { color: '#B9D7EA', font: { family: 'JetBrains Mono', size: 10 } }
               },
               y: {
                 min: 0.2,
                 max: 1.0,
-                grid: { color: '#1E2D4A' },
-                ticks: { color: '#9BA9BC', font: { family: 'JetBrains Mono', size: 10 } }
+                grid: { color: 'rgba(185, 215, 234, 0.12)' },
+                ticks: { color: '#B9D7EA', font: { family: 'JetBrains Mono', size: 10 } }
               }
             }
           }
@@ -2810,17 +2897,17 @@ persist_harness_history(iteration, seq, code_hash);`
         new Chart(ctxAbl, {
           type: 'bar',
           data: {
-            labels: ['Orig HSI', '+Reliability', '+RegGate', 'Full Proposed'],
+            labels: ['Baseline', '+Reliability', '+RegGate', 'Full Evo-Agent'],
             datasets: [
               {
                 label: 'Harmful Commits %',
                 data: [13.5, 8.2, 5.1, 4.2],
-                backgroundColor: '#FF5A5F'
+                backgroundColor: '#FF6B6B'
               },
               {
                 label: 'Regression Rate %',
                 data: [18.1, 11.4, 4.6, 2.8],
-                backgroundColor: '#9274FF'
+                backgroundColor: '#769FCD'
               }
             ]
           },
