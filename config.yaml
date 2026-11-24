@@ -8,7 +8,7 @@ llm:
   temperature: 1
 
 evolution:
-  max_iterations: 4              # number of evolution iterations
+  max_iterations: 0              # number of evolution iterations (set to 0 for demo)
   max_steps_per_iteration: 30    # max steps per iteration
   enable_bash: true
   max_context_tokens: 68000

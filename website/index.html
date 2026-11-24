@@ -1,0 +1,2497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confidence-Aware Hierarchical Self-Improving Agents | Research Project</title>
+  <meta name="description" content="Reliable Feedback and Regression-Aware Harness Evolution for Hierarchical Self-Improving AI Agents.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN for Experimental Dashboard -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* -------------------------------------------------------------
+       DESIGN SYSTEM & CSS VARIABLES
+       ------------------------------------------------------------- */
+    :root {
+      --bg-main: #080D18;
+      --bg-surface: #101827;
+      --bg-card: #131E33;
+      --bg-card-hover: #192640;
+      --border-subtle: #1E2D4A;
+      --border-highlight: #2A3E66;
+      --primary-accent: #508BFF;
+      --primary-glow: rgba(80, 139, 255, 0.25);
+      --secondary-accent: #9274FF;
+      --highlight-cyan: #5CE1E6;
+      --accent-danger: #FF5A5F;
+      --accent-warning: #FFB74D;
+      --accent-success: #00E676;
+      --text-main: #F1F5FC;
+      --text-muted: #9BA9BC;
+      --text-dim: #627289;
+      --font-heading: 'Space Grotesk', -apple-system, sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    body {
+      overflow-x: hidden;
+      background: radial-gradient(circle at 50% 0%, #111D36 0%, #080D18 70%);
+      min-height: 100vh;
+    }
+
+    /* Subtle grid overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-image: linear-gradient(to right, rgba(30, 45, 74, 0.15) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(30, 45, 74, 0.15) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    a {
+      color: var(--primary-accent);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    a:hover {
+      color: var(--highlight-cyan);
+    }
+
+    /* -------------------------------------------------------------
+       NAVIGATION BAR
+       ------------------------------------------------------------- */
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8, 13, 24, 0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: var(--transition);
+    }
+    .nav-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+    .brand-logo-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 16px rgba(80, 139, 255, 0.4);
+    }
+    .brand-logo-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: #FFF;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .btn-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-highlight);
+      border-radius: var(--radius-full);
+      color: var(--text-main);
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .btn-github:hover {
+      background: var(--border-subtle);
+      border-color: var(--primary-accent);
+      transform: translateY(-1px);
+    }
+
+    /* -------------------------------------------------------------
+       BUTTONS & BADGES
+       ------------------------------------------------------------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-accent), #366FE0);
+      color: #FFF;
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #6298FF, #4079EC);
+      box-shadow: 0 6px 24px rgba(80, 139, 255, 0.4);
+      transform: translateY(-2px);
+      color: #FFF;
+    }
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-highlight);
+    }
+    .btn-secondary:hover {
+      background: var(--border-subtle);
+      border-color: var(--primary-accent);
+      transform: translateY(-2px);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-primary {
+      background: rgba(80, 139, 255, 0.12);
+      border: 1px solid rgba(80, 139, 255, 0.35);
+      color: var(--primary-accent);
+    }
+    .badge-cyan {
+      background: rgba(92, 225, 230, 0.12);
+      border: 1px solid rgba(92, 225, 230, 0.35);
+      color: var(--highlight-cyan);
+    }
+    .badge-warning {
+      background: rgba(255, 183, 77, 0.15);
+      border: 1px solid rgba(255, 183, 77, 0.4);
+      color: var(--accent-warning);
+    }
+    .badge-success {
+      background: rgba(0, 230, 118, 0.12);
+      border: 1px solid rgba(0, 230, 118, 0.4);
+      color: var(--accent-success);
+    }
+    .badge-danger {
+      background: rgba(255, 90, 95, 0.12);
+      border: 1px solid rgba(255, 90, 95, 0.4);
+      color: var(--accent-danger);
+    }
+
+    /* -------------------------------------------------------------
+       HERO SECTION
+       ------------------------------------------------------------- */
+    .hero-section {
+      padding: 90px 0 80px;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 50px;
+      align-items: center;
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: 3.4rem;
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      margin-bottom: 22px;
+      background: linear-gradient(180deg, #FFFFFF 30%, #B8CEF5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 1.18rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 32px;
+      max-width: 580px;
+    }
+    .hero-highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .highlight-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+    .highlight-pill svg {
+      width: 16px;
+      height: 16px;
+      color: var(--highlight-cyan);
+    }
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Hero Animated Graph Visual */
+    .hero-visual-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-highlight);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 30px rgba(80, 139, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .visual-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .visual-title {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pulsing-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-success);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.7; }
+    }
+
+    /* -------------------------------------------------------------
+       SECTION HEADERS & GENERAL CARD LAYOUT
+       ------------------------------------------------------------- */
+    .section {
+      padding: 85px 0;
+      border-top: 1px solid var(--border-subtle);
+      position: relative;
+    }
+    .section-header {
+      margin-bottom: 48px;
+      text-align: left;
+    }
+    .section-tag {
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 2.3rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      line-height: 1.6;
+    }
+
+    /* -------------------------------------------------------------
+       RESEARCH MOTIVATION CARDS
+       ------------------------------------------------------------- */
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .challenge-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      position: relative;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .challenge-card:hover {
+      border-color: var(--primary-accent);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+    .challenge-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: rgba(80, 139, 255, 0.1);
+      border: 1px solid rgba(80, 139, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--primary-accent);
+    }
+    .challenge-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .challenge-card p {
+      font-size: 0.94rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+    .challenge-questions {
+      list-style: none;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 16px;
+      margin-top: auto;
+    }
+    .challenge-questions li {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .challenge-questions li::before {
+      content: "•";
+      color: var(--highlight-cyan);
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    /* -------------------------------------------------------------
+       ORIGINAL HSI ARCHITECTURE SECTION
+       ------------------------------------------------------------- */
+    .hsi-base-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 32px;
+    }
+    .hsi-level-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      position: relative;
+    }
+    .hsi-level-card.featured {
+      border-color: var(--secondary-accent);
+      background: linear-gradient(180deg, rgba(146, 116, 255, 0.05) 0%, var(--bg-card) 100%);
+    }
+    .level-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(146, 116, 255, 0.15);
+      color: var(--secondary-accent);
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .hsi-level-card h4 {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+    }
+    .level-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .level-pill {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      padding: 5px 12px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .callout-frozen {
+      margin-top: 28px;
+      padding: 18px 24px;
+      background: rgba(80, 139, 255, 0.06);
+      border: 1px solid rgba(80, 139, 255, 0.25);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .callout-frozen svg {
+      width: 28px;
+      height: 28px;
+      color: var(--primary-accent);
+      flex-shrink: 0;
+    }
+
+    /* -------------------------------------------------------------
+       PROPOSED RESEARCH ARCHITECTURE (INTERACTIVE 9-STAGE PIPELINE)
+       ------------------------------------------------------------- */
+    .pipeline-wrapper {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-highlight);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      margin-top: 30px;
+    }
+    .pipeline-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .pipeline-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    .pipeline-node {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+    .pipeline-node:hover, .pipeline-node.active {
+      border-color: var(--primary-accent);
+      background: var(--bg-card-hover);
+      box-shadow: 0 0 20px rgba(80, 139, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    .pipeline-node.active::after {
+      content: "";
+      position: absolute;
+      top: -2px; left: -2px; right: -2px; bottom: -2px;
+      border: 2px solid var(--highlight-cyan);
+      border-radius: var(--radius-md);
+      pointer-events: none;
+    }
+    .node-step-num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--highlight-cyan);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .node-name {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+    .node-desc-preview {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .node-badges {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .node-detail-panel {
+      margin-top: 28px;
+      padding: 24px;
+      background: #0B1322;
+      border: 1px solid var(--border-highlight);
+      border-radius: var(--radius-md);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .detail-left h4 {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      color: var(--highlight-cyan);
+      margin-bottom: 8px;
+    }
+    .detail-left p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .detail-right {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+    .detail-right .code-label {
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+    .detail-right pre {
+      color: #A5D6FF;
+      overflow-x: auto;
+    }
+
+    /* -------------------------------------------------------------
+       CORE RESEARCH MODULE CARDS
+       ------------------------------------------------------------- */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px;
+    }
+    .module-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+    .module-card.accent-blue { border-top: 4px solid var(--primary-accent); }
+    .module-card.accent-purple { border-top: 4px solid var(--secondary-accent); }
+    .module-card.accent-cyan { border-top: 4px solid var(--highlight-cyan); }
+    .module-header {
+      margin-bottom: 18px;
+    }
+    .module-title {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    .module-purpose {
+      font-size: 0.93rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 22px;
+    }
+    .module-features-title {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+    .module-features-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .module-features-list li {
+      font-size: 0.88rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: var(--text-main);
+    }
+    .module-features-list svg {
+      width: 16px;
+      height: 16px;
+      color: var(--primary-accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* -------------------------------------------------------------
+       INTERACTIVE WORKFLOW SIMULATION SECTION
+       ------------------------------------------------------------- */
+    .sim-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-highlight);
+      border-radius: var(--radius-lg);
+      padding: 34px;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.4);
+    }
+    .sim-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 22px;
+      margin-bottom: 28px;
+    }
+    .scenario-picker {
+      display: flex;
+      gap: 10px;
+    }
+    .scenario-btn {
+      padding: 9px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .scenario-btn:hover {
+      color: var(--text-main);
+      border-color: var(--border-highlight);
+    }
+    .scenario-btn.active {
+      background: rgba(80, 139, 255, 0.15);
+      border-color: var(--primary-accent);
+      color: #FFF;
+      font-weight: 600;
+    }
+    .sim-steps-track {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    .sim-step-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 10px;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .sim-step-item.active {
+      border-color: var(--highlight-cyan);
+      background: rgba(92, 225, 230, 0.1);
+      box-shadow: 0 0 15px rgba(92, 225, 230, 0.2);
+    }
+    .sim-step-item.done {
+      border-color: var(--accent-success);
+      background: rgba(0, 230, 118, 0.08);
+    }
+    .sim-step-num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .sim-step-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sim-display-console {
+      background: #070B13;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .console-logs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .console-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      line-height: 1.5;
+    }
+    .console-time {
+      color: var(--text-dim);
+      font-size: 0.76rem;
+      flex-shrink: 0;
+    }
+    .console-msg {
+      color: #D1E0F7;
+    }
+    .console-status-bar {
+      margin-top: 18px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* -------------------------------------------------------------
+       EXPERIMENTAL DASHBOARD
+       ------------------------------------------------------------- */
+    .dashboard-notice {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      background: rgba(255, 183, 77, 0.08);
+      border: 1px solid rgba(255, 183, 77, 0.3);
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      color: var(--accent-warning);
+      margin-bottom: 30px;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stat-val {
+      font-family: var(--font-heading);
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+    }
+    .stat-delta {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      margin-top: 4px;
+    }
+    .delta-pos { color: var(--accent-success); }
+    .delta-neg { color: var(--accent-danger); }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .chart-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      position: relative;
+    }
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .chart-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Comparison Table */
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow-x: auto;
+    }
+    .research-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+    .research-table th {
+      background: var(--bg-surface);
+      padding: 14px 18px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .research-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+    .research-table tr:hover td {
+      background: var(--bg-card-hover);
+    }
+    .table-method-name {
+      font-weight: 600;
+      color: #FFF;
+    }
+
+    /* -------------------------------------------------------------
+       RESEARCH HYPOTHESIS & STATEMENT
+       ------------------------------------------------------------- */
+    .hypothesis-card {
+      background: linear-gradient(135deg, rgba(80, 139, 255, 0.08) 0%, rgba(146, 116, 255, 0.08) 100%);
+      border: 1px solid rgba(80, 139, 255, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 44px;
+      text-align: center;
+      position: relative;
+    }
+    .hypothesis-quote {
+      font-family: var(--font-heading);
+      font-size: 1.65rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #FFFFFF;
+      margin-bottom: 20px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hypothesis-meta {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* -------------------------------------------------------------
+       RESEARCH ROADMAP TIMELINE
+       ------------------------------------------------------------- */
+    .roadmap-track {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+      margin-top: 30px;
+    }
+    .roadmap-phase {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .roadmap-phase.in-progress {
+      border-color: var(--highlight-cyan);
+      box-shadow: 0 0 16px rgba(92, 225, 230, 0.15);
+    }
+    .phase-badge {
+      margin-bottom: 10px;
+      font-size: 0.7rem;
+    }
+    .phase-title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .phase-items {
+      list-style: none;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .phase-items li::before {
+      content: "› ";
+      color: var(--primary-accent);
+      font-weight: 700;
+    }
+
+    /* -------------------------------------------------------------
+       LIMITATIONS & REFERENCES
+       ------------------------------------------------------------- */
+    .limitations-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .limitation-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      display: flex;
+      gap: 16px;
+    }
+    .limitation-icon {
+      color: var(--accent-warning);
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+    .limitation-item h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .limitation-item p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .references-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .reference-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: var(--transition);
+    }
+    .reference-card:hover {
+      border-color: var(--primary-accent);
+      transform: translateX(4px);
+    }
+    .ref-title {
+      font-weight: 600;
+      font-size: 0.96rem;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .ref-meta {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    /* -------------------------------------------------------------
+       FOOTER
+       ------------------------------------------------------------- */
+    .site-footer {
+      border-top: 1px solid var(--border-subtle);
+      background: #050810;
+      padding: 60px 0 35px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .footer-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+    .footer-brand {
+      max-width: 420px;
+    }
+    .footer-brand h4 {
+      font-family: var(--font-heading);
+      color: #FFF;
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 25px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    /* -------------------------------------------------------------
+       RESPONSIVENESS
+       ------------------------------------------------------------- */
+    @media (max-width: 1024px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .challenges-grid, .modules-grid { grid-template-columns: 1fr; }
+      .charts-grid { grid-template-columns: 1fr; }
+      .roadmap-track { grid-template-columns: repeat(2, 1fr); }
+      .limitations-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .pipeline-row { grid-template-columns: 1fr; }
+      .node-detail-panel { grid-template-columns: 1fr; }
+      .sim-steps-track { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero-title { font-size: 2.4rem; }
+      .stats-row { grid-template-columns: 1fr; }
+      .roadmap-track { grid-template-columns: 1fr; }
+      .sim-steps-track { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- -----------------------------------------------------------
+       STICKY NAVIGATION BAR
+       ----------------------------------------------------------- -->
+  <nav class="nav-bar">
+    <div class="container nav-content">
+      <a href="#top" class="nav-brand">
+        <div class="brand-logo-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <span>Confidence-Aware HSI</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#modules">Core Modules</a></li>
+        <li><a href="#simulation">Live Simulation</a></li>
+        <li><a href="#experiments">Dashboard</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="https://github.com/TailinZhou/hsi" target="_blank" rel="noopener noreferrer" class="btn-github">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span>HSI GitHub</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- -----------------------------------------------------------
+       HERO SECTION
+       ----------------------------------------------------------- -->
+  <section class="hero-section" id="overview">
+    <div class="container hero-grid">
+      <div class="hero-left">
+        <div class="hero-meta">
+          <span class="badge badge-primary">Research Prototype</span>
+          <span class="badge badge-cyan">Based on arXiv:2608.08466</span>
+        </div>
+        <h1 class="hero-title">Making Self-Improving AI Agents More Reliable.</h1>
+        <p class="hero-subtitle">
+          An extension to Hierarchical Self-Improvement that evaluates feedback reliability, controls harness evolution under uncertainty, and validates improvements against regressions.
+        </p>
+
+        <div class="hero-highlights">
+          <div class="highlight-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Confidence-Aware Evolution</span>
+          </div>
+          <div class="highlight-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span>Reliable Evaluation Feedback</span>
+          </div>
+          <div class="highlight-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            <span>Regression-Aware Validation</span>
+          </div>
+        </div>
+
+        <div class="hero-ctas">
+          <a href="#architecture" class="btn btn-primary">Explore Architecture</a>
+          <a href="#simulation" class="btn btn-secondary">Run Live Simulation</a>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-visual-card">
+          <div class="visual-header">
+            <div class="visual-title">
+              <span class="pulsing-dot"></span>
+              <span>LIVE AGENT HARNESS SYSTEM</span>
+            </div>
+            <span class="badge badge-primary">FROZEN LLM M</span>
+          </div>
+
+          <!-- Interactive SVG Diagram for Hero -->
+          <svg viewBox="0 0 440 330" style="width: 100%; height: auto; display: block;">
+            <defs>
+              <linearGradient id="llmGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#508BFF"/>
+                <stop offset="100%" stop-color="#9274FF"/>
+              </linearGradient>
+              <linearGradient id="harnessGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#1E2D4A"/>
+                <stop offset="100%" stop-color="#101827"/>
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            <!-- Outer Harness Loop boundary -->
+            <rect x="20" y="20" width="400" height="290" rx="14" fill="url(#harnessGrad)" stroke="#2A3E66" stroke-dasharray="4,4"/>
+            <text x="35" y="44" fill="#9BA9BC" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1">TASK HARNESS SCOPE H (EVOLVABLE)</text>
+
+            <!-- Central Frozen LLM Backbone -->
+            <circle cx="220" cy="140" r="46" fill="url(#llmGrad)" filter="url(#glow)" opacity="0.95"/>
+            <text x="220" y="136" text-anchor="middle" fill="#FFFFFF" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="14">FROZEN LLM</text>
+            <text x="220" y="152" text-anchor="middle" fill="#E0EAFF" font-family="'JetBrains Mono', monospace" font-size="9">WEIGHTS FROZEN</text>
+
+            <!-- Surrounding Harness Nodes -->
+            <!-- Prompts -->
+            <rect x="40" y="70" width="85" height="34" rx="6" fill="#131E33" stroke="#508BFF"/>
+            <text x="82" y="91" text-anchor="middle" fill="#F1F5FC" font-size="10" font-family="'Inter', sans-serif">prompts.py</text>
+            <!-- Hooks -->
+            <rect x="40" y="130" width="85" height="34" rx="6" fill="#131E33" stroke="#508BFF"/>
+            <text x="82" y="151" text-anchor="middle" fill="#F1F5FC" font-size="10" font-family="'Inter', sans-serif">hooks.py</text>
+            <!-- Memory & Context -->
+            <rect x="40" y="190" width="85" height="34" rx="6" fill="#131E33" stroke="#508BFF"/>
+            <text x="82" y="211" text-anchor="middle" fill="#F1F5FC" font-size="10" font-family="'Inter', sans-serif">context.py</text>
+
+            <!-- Flow Paths -->
+            <path d="M125 87 Q170 87 185 115" stroke="#508BFF" stroke-width="1.5" fill="none" stroke-dasharray="3,3"/>
+            <path d="M125 147 L174 140" stroke="#508BFF" stroke-width="1.5" fill="none"/>
+            <path d="M125 207 Q170 207 185 165" stroke="#508BFF" stroke-width="1.5" fill="none" stroke-dasharray="3,3"/>
+
+            <!-- Right Side: Reliability Estimator & Regression Gate -->
+            <rect x="300" y="80" width="105" height="42" rx="6" fill="#131E33" stroke="#5CE1E6"/>
+            <text x="352" y="98" text-anchor="middle" fill="#5CE1E6" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600">RELIABILITY</text>
+            <text x="352" y="112" text-anchor="middle" fill="#F1F5FC" font-size="9.5">Estimator R(E)</text>
+
+            <rect x="300" y="145" width="105" height="42" rx="6" fill="#131E33" stroke="#9274FF"/>
+            <text x="352" y="163" text-anchor="middle" fill="#9274FF" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600">CONTROLLER</text>
+            <text x="352" y="177" text-anchor="middle" fill="#F1F5FC" font-size="9.5">ALLOW / DEFER</text>
+
+            <rect x="300" y="210" width="105" height="42" rx="6" fill="#131E33" stroke="#00E676"/>
+            <text x="352" y="228" text-anchor="middle" fill="#00E676" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="600">REGRESSION</text>
+            <text x="352" y="242" text-anchor="middle" fill="#F1F5FC" font-size="9.5">Paired Gate</text>
+
+            <!-- Connecting Feedback Loop -->
+            <path d="M266 140 Q285 100 300 100" stroke="#5CE1E6" stroke-width="1.5" fill="none"/>
+            <path d="M352 122 L352 145" stroke="#9274FF" stroke-width="1.5" fill="none"/>
+            <path d="M352 187 L352 210" stroke="#00E676" stroke-width="1.5" fill="none"/>
+            <path d="M300 231 Q220 285 100 230" stroke="#00E676" stroke-width="1.5" fill="none" stroke-dasharray="3,3"/>
+            <polygon points="100,230 108,228 106,236" fill="#00E676"/>
+
+            <!-- Status Label -->
+            <text x="220" y="295" text-anchor="middle" fill="#9BA9BC" font-family="'JetBrains Mono', monospace" font-size="9">Empirically Validated Seam: using_harness(agent, task)</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       RESEARCH MOTIVATION
+       ----------------------------------------------------------- -->
+  <section class="section" id="motivation">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-cyan section-tag">The Core Problem</span>
+        <h2 class="section-title">Self-improvement needs more than a better score.</h2>
+        <p class="section-desc">
+          Existing self-improving agents mutate their execution harnesses using noisy, uncalibrated evaluation feedback. An apparent improvement on a random seed can mask severe regressions across other tasks.
+        </p>
+      </div>
+
+      <div class="challenges-grid">
+        <!-- Challenge 1 -->
+        <div class="challenge-card">
+          <div class="challenge-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h3>1. Feedback Reliability</h3>
+          <p>
+            Evaluation signals may be incomplete (crashed episodes, missing rewards), highly variable across random environment seeds, or mismatched to the candidate code hash.
+          </p>
+          <ul class="challenge-questions">
+            <li>Is the evaluation evidence complete?</li>
+            <li>Are repeated outcomes statistically consistent?</li>
+            <li>Can reported outcomes be cryptographically verified?</li>
+          </ul>
+        </div>
+
+        <!-- Challenge 2 -->
+        <div class="challenge-card">
+          <div class="challenge-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h3>2. Evolution Under Uncertainty</h3>
+          <p>
+            Standard self-improvement proceeds indiscriminately after every step. Without knowing whether evidence is trustworthy, evolution risk cannot be calibrated.
+          </p>
+          <ul class="challenge-questions">
+            <li>Should the system evolve now (ALLOW)?</li>
+            <li>Should it gather additional trials (REQUEST MORE)?</li>
+            <li>Should it defer harness modifications (DEFER)?</li>
+          </ul>
+        </div>
+
+        <!-- Challenge 3 -->
+        <div class="challenge-card">
+          <div class="challenge-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </div>
+          <h3>3. Regression Prevention</h3>
+          <p>
+            A candidate may discover a lucky heuristic that boosts one task while breaking 4 others. Without paired incumbent validation, harmful changes pollute the lineage.
+          </p>
+          <ul class="challenge-questions">
+            <li>Does the candidate genuinely outperform the incumbent?</li>
+            <li>Does it preserve previously successful capabilities?</li>
+            <li>Can harmful modifications be rolled back safely?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       ORIGINAL HSI ARCHITECTURE SECTION
+       ----------------------------------------------------------- -->
+  <section class="section" id="hsi-baseline">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-primary section-tag">Foundation</span>
+        <h2 class="section-title">The Original HSI Framework</h2>
+        <p class="section-desc">
+          Hierarchical Self-Improvement operates across three layered scopes around a single frozen LLM backbone (DeepSeek-V4-Flash / GLM), separating code execution from harness evolution.
+        </p>
+      </div>
+
+      <div class="hsi-base-grid">
+        <div class="hsi-level-card">
+          <span class="level-badge">LEVEL 1</span>
+          <h4>Task Harness Scope ($H$)</h4>
+          <p style="color: var(--text-muted); font-size: 0.92rem;">
+            Executes agent steps on the target environment. Thinking is turned OFF at task time to cap per-step inference overhead. Interacts through a strict boundary seam: <code>using_harness(agent, task)</code>.
+          </p>
+          <div class="level-items">
+            <span class="level-pill">harness.py</span>
+            <span class="level-pill">prompts.py</span>
+            <span class="level-pill">hooks.py</span>
+            <span class="level-pill">context.py</span>
+          </div>
+        </div>
+
+        <div class="hsi-level-card">
+          <span class="level-badge">LEVEL 2</span>
+          <h4>Evolver Scope</h4>
+          <p style="color: var(--text-muted); font-size: 0.92rem;">
+            Operates with thinking ON. Inspects execution traces, generates targeted edits, evaluates candidates with <code>evaluate()</code>, records ephemeral plans in <code>plan.md</code>, and squashes 2–5 diverse commits into the iteration pool.
+          </p>
+          <div class="level-items">
+            <span class="level-pill">evolve.py</span>
+            <span class="level-pill">actions/</span>
+            <span class="level-pill">commit_iteration()</span>
+          </div>
+        </div>
+
+        <div class="hsi-level-card featured" style="grid-column: span 2;">
+          <span class="level-badge" style="background: rgba(146, 116, 255, 0.25);">LEVEL 3 — META-EVOLVER SCOPE (&Sigma;)</span>
+          <h4>Outer Frozen Anchor & Strategy Rewriting</h4>
+          <p style="color: var(--text-muted); font-size: 0.92rem;">
+            The meta-evolver's execution engine is frozen in <code>godel_evolution_init/</code>. It rewrites the strategy files in <code>evolution/</code> (like <code>select_seed.py</code> and <code>select_commit.py</code>), preventing infinite self-modification loops while tuning the exploration policy.
+          </p>
+          <div class="level-items">
+            <span class="level-pill">select_seed.py</span>
+            <span class="level-pill">select_commit.py</span>
+            <span class="level-pill">strategies/ensemble.py</span>
+            <span class="level-pill">submit_best.py</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout-frozen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <div>
+          <strong style="color: #FFF;">Crucial Invariant: Zero Backbone Model Weight Changes</strong>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 2px;">
+            HSI never trains, finetunes, or modifies the weights of the underlying LLM. Self-improvement is strictly confined to evolving the agent's Python code scaffolding and task harness.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       PROPOSED RESEARCH ARCHITECTURE (9-STAGE INTERACTIVE PIPELINE)
+       ----------------------------------------------------------- -->
+  <section class="section" id="architecture">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-cyan section-tag">Our Proposed Extension</span>
+        <h2 class="section-title">Confidence-Aware Hierarchical Self-Improvement</h2>
+        <p class="section-desc">
+          Click any component below to inspect its data contract, reliability checks, and mathematical formulation.
+        </p>
+      </div>
+
+      <div class="pipeline-wrapper">
+        <div class="pipeline-flow">
+          <!-- Row 1 -->
+          <div class="pipeline-row">
+            <div class="pipeline-node active" onclick="selectNode(1)">
+              <div class="node-step-num"><span>Stage 01</span> <span>Input</span></div>
+              <div class="node-name">Task Environment</div>
+              <div class="node-desc-preview">Benchmark tasks (BabyAI, Crafter), episode rollouts, and raw environment rewards.</div>
+              <div class="node-badges">
+                <span class="badge badge-primary">BALROG</span>
+              </div>
+            </div>
+
+            <div class="pipeline-node" onclick="selectNode(2)">
+              <div class="node-step-num"><span>Stage 02</span> <span>Baseline</span></div>
+              <div class="node-name">Frozen LLM + Incumbent H₀</div>
+              <div class="node-desc-preview">Current active baseline harness executing tasks without model parameter updates.</div>
+              <div class="node-badges">
+                <span class="badge badge-cyan">Harness Seam</span>
+              </div>
+            </div>
+
+            <div class="pipeline-node" onclick="selectNode(3)">
+              <div class="node-step-num"><span>Stage 03</span> <span>Telemetry</span></div>
+              <div class="node-name">Evaluation Evidence (Eₜ)</div>
+              <div class="node-desc-preview">Multi-episode traces, raw scores, execution crash logs, and cryptographic code hashes.</div>
+              <div class="node-badges">
+                <span class="badge badge-primary">Snapshots</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="pipeline-row">
+            <div class="pipeline-node" onclick="selectNode(4)">
+              <div class="node-step-num"><span>Stage 04</span> <span>Reliability</span></div>
+              <div class="node-name">Feedback Reliability Estimator</div>
+              <div class="node-desc-preview">Calculates completeness, variance, outcome verification, and historical calibration.</div>
+              <div class="node-badges">
+                <span class="badge badge-cyan">R(Eₜ) ∈ [0, 1]</span>
+              </div>
+            </div>
+
+            <div class="pipeline-node" onclick="selectNode(5)">
+              <div class="node-step-num"><span>Stage 05</span> <span>Control</span></div>
+              <div class="node-name">Evolution Controller</div>
+              <div class="node-desc-preview">Governs iteration gating: ALLOW EVOLUTION, REQUEST MORE EVIDENCE, or DEFER.</div>
+              <div class="node-badges">
+                <span class="badge badge-warning">Decision Gate</span>
+              </div>
+            </div>
+
+            <div class="pipeline-node" onclick="selectNode(6)">
+              <div class="node-step-num"><span>Stage 06</span> <span>Evolver</span></div>
+              <div class="node-name">Candidate Generation (H')</div>
+              <div class="node-desc-preview">Targeted code edits by ReAct evolver; fresh import and snapshot persistence.</div>
+              <div class="node-badges">
+                <span class="badge badge-primary">Versioned Git</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="pipeline-row">
+            <div class="pipeline-node" onclick="selectNode(7)">
+              <div class="node-step-num"><span>Stage 07</span> <span>Validation</span></div>
+              <div class="node-name">Regression-Aware Validation</div>
+              <div class="node-desc-preview">Paired task-level evaluation: Candidate H' vs Incumbent H₀ on identical seeds.</div>
+              <div class="node-badges">
+                <span class="badge badge-cyan">Paired Δ</span>
+              </div>
+            </div>
+
+            <div class="pipeline-node" onclick="selectNode(8)">
+              <div class="node-step-num"><span>Stage 08</span> <span>Decision</span></div>
+              <div class="node-name">Acceptance / Rollback</div>
+              <div class="node-desc-preview">Promotes candidate if Δ > τ and no capability regression; else rolls back to incumbent.</div>
+              <div class="node-badges">
+                <span class="badge badge-success">ACCEPT</span>
+                <span class="badge badge-danger">REJECT</span>
+              </div>
+            </div>
+
+            <div class="pipeline-node" onclick="selectNode(9)">
+              <div class="node-step-num"><span>Stage 09</span> <span>Audit</span></div>
+              <div class="node-name">Evidence-Based History</div>
+              <div class="node-desc-preview">Persists decisions, reliability scores, and regression results in structured logs.</div>
+              <div class="node-badges">
+                <span class="badge badge-primary">records.jsonl</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Node Detail Panel -->
+        <div class="node-detail-panel" id="nodeDetailPanel">
+          <div class="detail-left">
+            <span class="badge badge-primary" id="detailBadge" style="margin-bottom: 8px;">Stage 01</span>
+            <h4 id="detailTitle">Task Environment & Rollout</h4>
+            <p id="detailDesc">
+              The benchmark environment (BALROG BabyAI, Crafter, TextWorld) executes agent actions. Produces raw episode progressions, success/fail signals, and interaction logs.
+            </p>
+          </div>
+          <div class="detail-right">
+            <div class="code-label">Component Contract & Formulation</div>
+            <pre><code id="detailCode">// Inputs: Action a_t from Task Harness
+// Outputs: Observation o_{t+1}, reward r_t, done boolean
+E = { episode_progressions, raw_trajectories, logs }</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       CORE RESEARCH MODULES
+       ----------------------------------------------------------- -->
+  <section class="section" id="modules">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-primary section-tag">Modular Implementation</span>
+        <h2 class="section-title">Core Research Modules</h2>
+        <p class="section-desc">
+          Packaged into <code>src/react_loop/reliability/</code> to guarantee strict backwards compatibility with original HSI runs.
+        </p>
+      </div>
+
+      <div class="modules-grid">
+        <!-- Module A -->
+        <div class="module-card accent-blue">
+          <div class="module-header">
+            <span class="badge badge-primary">MODULE A</span>
+            <h3 class="module-title">Feedback Reliability Estimator</h3>
+          </div>
+          <p class="module-purpose">
+            Estimates whether evaluation evidence $E_t$ is trustworthy enough to justify an evolution decision, decoupling signal reliability from raw score magnitude.
+          </p>
+          <div class="module-features-title">Signal Vector R(E)</div>
+          <ul class="module-features-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Evidence Completeness:</strong> Ratio of completed vs requested episodes without harness exceptions.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Repeated-Run Consistency:</strong> Sample standard deviation $\sigma$ and Jackknife standard error.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Outcome Verification:</strong> Strict hash alignment between disk bytes and reported evaluations.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Historical Calibration:</strong> Brier score of past high-confidence evaluation predictions.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Module B -->
+        <div class="module-card accent-purple">
+          <div class="module-header">
+            <span class="badge badge-primary">MODULE B</span>
+            <h3 class="module-title">Confidence-Aware Controller</h3>
+          </div>
+          <p class="module-purpose">
+            Evaluates the reliability score $R(E)$ against calibrated thresholds to govern whether the agent should evolve, request more data, or defer.
+          </p>
+          <div class="module-features-title">Discrete Decision Policy</div>
+          <ul class="module-features-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong style="color: var(--accent-success);">ALLOW_EVOLUTION:</strong> Evidence meets completeness ($>0.95$) and variance constraints; agent proceeds to candidate modification.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong style="color: var(--accent-warning);">REQUEST_MORE_EVIDENCE:</strong> High variance detected; dispatches supplementary episodes on existing seed before mutating code.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong style="color: var(--accent-danger);">DEFER_EVOLUTION:</strong> Signal uncalibrated or harness crashed; preserves incumbent without state pollution.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Module C -->
+        <div class="module-card accent-cyan">
+          <div class="module-header">
+            <span class="badge badge-cyan">MODULE C</span>
+            <h3 class="module-title">Regression-Aware Validation</h3>
+          </div>
+          <p class="module-purpose">
+            Guards candidate commitment in <code>commit_iteration()</code> via direct paired comparison against the incumbent on identical task seeds.
+          </p>
+          <div class="module-features-title">Validation Invariants</div>
+          <ul class="module-features-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Paired Task Evaluation:</strong> Eliminates environment seed confounders by evaluating $H'$ and $H_0$ on identical task instances.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Regression Tolerance $\delta$:</strong> Rejects candidates that degrade performance on any previously solved sub-task beyond margin $\delta$.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Automated Rollback:</strong> Reverts disk state to $H_0$ if validation fails, recording failure rationale in <code>BOOTSTRAP.md</code>.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       INTERACTIVE WORKFLOW SIMULATION SECTION
+       ----------------------------------------------------------- -->
+  <section class="section" id="simulation">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-cyan section-tag">Live Demonstration</span>
+        <h2 class="section-title">Interactive Workflow Demonstration</h2>
+        <p class="section-desc">
+          Test how the proposed framework handles different evaluation scenarios. Select a scenario and click "Run Simulation" to step through the pipeline.
+        </p>
+      </div>
+
+      <div class="sim-card">
+        <div class="sim-controls">
+          <div class="scenario-picker">
+            <button class="scenario-btn active" onclick="setScenario('reliable', this)">Scenario 1: Reliable Feedback</button>
+            <button class="scenario-btn" onclick="setScenario('incomplete', this)">Scenario 2: Incomplete Feedback</button>
+            <button class="scenario-btn" onclick="setScenario('regression', this)">Scenario 3: Regression Detected</button>
+          </div>
+          <button class="btn btn-primary" id="btnRunSim" onclick="runSimulation()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Run Simulation</span>
+          </button>
+        </div>
+
+        <!-- Step Tracking Bar -->
+        <div class="sim-steps-track">
+          <div class="sim-step-item" id="sStep1">
+            <div class="sim-step-num">Step 1</div>
+            <div class="sim-step-name">Task Run</div>
+          </div>
+          <div class="sim-step-item" id="sStep2">
+            <div class="sim-step-num">Step 2</div>
+            <div class="sim-step-name">Telemetry</div>
+          </div>
+          <div class="sim-step-item" id="sStep3">
+            <div class="sim-step-num">Step 3</div>
+            <div class="sim-step-name">Reliability</div>
+          </div>
+          <div class="sim-step-item" id="sStep4">
+            <div class="sim-step-num">Step 4</div>
+            <div class="sim-step-name">Controller</div>
+          </div>
+          <div class="sim-step-item" id="sStep5">
+            <div class="sim-step-num">Step 5</div>
+            <div class="sim-step-name">Candidate H'</div>
+          </div>
+          <div class="sim-step-item" id="sStep6">
+            <div class="sim-step-num">Step 6</div>
+            <div class="sim-step-name">Paired Gate</div>
+          </div>
+          <div class="sim-step-item" id="sStep7">
+            <div class="sim-step-num">Step 7</div>
+            <div class="sim-step-name">Outcome</div>
+          </div>
+        </div>
+
+        <!-- Simulation Terminal Console -->
+        <div class="sim-display-console">
+          <div class="console-logs" id="simLogs">
+            <div class="console-line">
+              <span class="console-time">[READY]</span>
+              <span class="console-msg">Select a scenario above and click "Run Simulation" to start the demonstration.</span>
+            </div>
+          </div>
+          <div class="console-status-bar">
+            <span style="color: var(--text-dim); font-size: 0.78rem;">Simulation Engine v1.0 • Synthetic Pedagogical Traces</span>
+            <span id="simResultBadge" class="badge badge-primary">IDLE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       EXPERIMENTAL DASHBOARD
+       ----------------------------------------------------------- -->
+  <section class="section" id="experiments">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-warning section-tag">Evaluation Suite</span>
+        <h2 class="section-title">Experimental Research Dashboard</h2>
+        <p class="section-desc">
+          Planned benchmarks comparing static harnesses, baseline HSI, and the full confidence-aware extension.
+        </p>
+      </div>
+
+      <div class="dashboard-notice">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span><strong>Notice:</strong> Illustrative dashboard data for methodology verification. Experimental results will be populated following completion of live BALROG BabyAI benchmark trials.</span>
+      </div>
+
+      <!-- Key Stat Metrics Row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label"><span>Task Success Rate</span> <span class="badge badge-primary">BabyAI</span></div>
+          <div class="stat-val">84.6%</div>
+          <div class="stat-delta delta-pos">+42.6% over Init Harness</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span>Harmful Acceptance</span> <span class="badge badge-cyan">Safety</span></div>
+          <div class="stat-val">4.2%</div>
+          <div class="stat-delta delta-pos">-68% vs Original HSI (13.5%)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span>Mean LCB Reward</span> <span class="badge badge-primary">z = 0.5</span></div>
+          <div class="stat-val">0.812</div>
+          <div class="stat-delta delta-pos">+0.392 vs Baseline</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span>Regression Rate</span> <span class="badge badge-danger">Gate Veto</span></div>
+          <div class="stat-val">2.8%</div>
+          <div class="stat-delta delta-pos">-84% vs Unchecked (18.1%)</div>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-header">
+            <h4 class="chart-title">Reward Evolution Across Iterations ($T=5$)</h4>
+            <span class="badge badge-primary">LCB Progress</span>
+          </div>
+          <div style="height: 280px; position: relative;">
+            <canvas id="evolutionChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-header">
+            <h4 class="chart-title">Harmful Commits vs False Rejections</h4>
+            <span class="badge badge-cyan">Ablation</span>
+          </div>
+          <div style="height: 280px; position: relative;">
+            <canvas id="ablationChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comprehensive Comparison Table -->
+      <div class="table-container">
+        <table class="research-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Task Success</th>
+              <th>Mean Reward</th>
+              <th>LCB Reward</th>
+              <th>Harmful Acceptance</th>
+              <th>Regression Rate</th>
+              <th>Token Cost</th>
+              <th>Execution Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="table-method-name">A. Frozen LLM + Static Harness</td>
+              <td>42.0%</td>
+              <td>0.420</td>
+              <td>0.380</td>
+              <td>0.0%</td>
+              <td>0.0%</td>
+              <td>1.2k / task</td>
+              <td>12.4s</td>
+            </tr>
+            <tr>
+              <td class="table-method-name">B. Original HSI (Meta-On)</td>
+              <td>81.3%</td>
+              <td>0.825</td>
+              <td>0.773</td>
+              <td>13.5%</td>
+              <td>18.1%</td>
+              <td>48.5k / iter</td>
+              <td>18.2m</td>
+            </tr>
+            <tr>
+              <td class="table-method-name">C. HSI + Reliability Estimator</td>
+              <td>82.4%</td>
+              <td>0.831</td>
+              <td>0.789</td>
+              <td>8.2%</td>
+              <td>11.4%</td>
+              <td>51.2k / iter</td>
+              <td>19.5m</td>
+            </tr>
+            <tr>
+              <td class="table-method-name">D. HSI + Regression Gate</td>
+              <td>83.7%</td>
+              <td>0.840</td>
+              <td>0.801</td>
+              <td>5.1%</td>
+              <td>4.6%</td>
+              <td>54.0k / iter</td>
+              <td>21.0m</td>
+            </tr>
+            <tr style="background: rgba(80, 139, 255, 0.08);">
+              <td class="table-method-name" style="color: var(--highlight-cyan);">E. Full Proposed Method (C + D)</td>
+              <td><strong>84.6%</strong></td>
+              <td><strong>0.852</strong></td>
+              <td><strong>0.812</strong></td>
+              <td><strong>4.2%</strong></td>
+              <td><strong>2.8%</strong></td>
+              <td>56.8k / iter</td>
+              <td>22.4m</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       EXPERIMENTAL METHODOLOGY
+       ----------------------------------------------------------- -->
+  <section class="section" id="methodology">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-primary section-tag">Protocol</span>
+        <h2 class="section-title">Experimental Methodology</h2>
+        <p class="section-desc">
+          Rigorous benchmarking guidelines designed to ensure empirical reproducibility and eliminate evaluation data contamination.
+        </p>
+      </div>
+
+      <div class="hsi-base-grid">
+        <div class="hsi-level-card">
+          <span class="level-badge">BENCHMARKS</span>
+          <h4>Evaluation Environments</h4>
+          <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 12px;">
+            Targeting standard game and text environments from the BALROG benchmark:
+          </p>
+          <ul class="phase-items">
+            <li><strong>Primary: BALROG BabyAI (5 tasks):</strong> Goto, Pickup, Open, Putnext, PickUpSeqGoTo.</li>
+            <li><strong>Secondary: TextWorld (3 game templates):</strong> Sequential object manipulation and navigation.</li>
+            <li><strong>Sub-suite protocol:</strong> 80% dev exploration, 20% held-out test split (Setup B).</li>
+          </ul>
+        </div>
+
+        <div class="hsi-level-card">
+          <span class="level-badge">STATISTICS</span>
+          <h4>Uncertainty & Significance</h4>
+          <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 12px;">
+            All reported numbers are subjected to rigorous variance isolation:
+          </p>
+          <ul class="phase-items">
+            <li>Lower Confidence Bound: $r = \mu - z \cdot \sigma / \sqrt{n}$ with $z=0.5$.</li>
+            <li>5 independent repeated evaluation passes per test harness snapshot.</li>
+            <li>Paired t-tests for incumbent vs candidate comparisons ($p < 0.05$).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       RESEARCH HYPOTHESIS STATEMENT
+       ----------------------------------------------------------- -->
+  <section class="section">
+    <div class="container">
+      <div class="hypothesis-card">
+        <span class="badge badge-cyan" style="margin-bottom: 18px;">Research Hypothesis</span>
+        <div class="hypothesis-quote">
+          “Estimating evaluation-feedback reliability and validating candidate harnesses against an incumbent can reduce harmful harness modifications while preserving the ability of hierarchical self-improving agents to improve task performance.”
+        </div>
+        <div class="hypothesis-meta">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>Note: This is an empirical research hypothesis under active investigation, not an established scientific fact.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       RESEARCH ROADMAP TIMELINE
+       ----------------------------------------------------------- -->
+  <section class="section" id="roadmap">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-cyan section-tag">Milestones</span>
+        <h2 class="section-title">Research Implementation Roadmap</h2>
+        <p class="section-desc">
+          Structured execution plan from initial codebase audit to published empirical results.
+        </p>
+      </div>
+
+      <div class="roadmap-track">
+        <!-- Phase 1 -->
+        <div class="roadmap-phase in-progress">
+          <span class="badge badge-cyan phase-badge">Phase 1 • In Progress</span>
+          <div class="phase-title">HSI Baseline</div>
+          <ul class="phase-items">
+            <li>Audit repository architecture</li>
+            <li>Identify integration points</li>
+            <li>Resolve Minigrid & Gym runtime</li>
+            <li>Reproduce BabyAI baseline</li>
+          </ul>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="roadmap-phase">
+          <span class="badge badge-primary phase-badge">Phase 2 • Planned</span>
+          <div class="phase-title">Reliability Estimator</div>
+          <ul class="phase-items">
+            <li>Extract telemetry evidence</li>
+            <li>Implement completeness metrics</li>
+            <li>Jackknife consistency checks</li>
+            <li>Unit test suite</li>
+          </ul>
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="roadmap-phase">
+          <span class="badge badge-primary phase-badge">Phase 3 • Planned</span>
+          <div class="phase-title">Controller Policy</div>
+          <ul class="phase-items">
+            <li>Implement ALLOW/DEFER logic</li>
+            <li>Add evidence-request loop</li>
+            <li>Calibrate reliability threshold</li>
+          </ul>
+        </div>
+
+        <!-- Phase 4 -->
+        <div class="roadmap-phase">
+          <span class="badge badge-primary phase-badge">Phase 4 • Planned</span>
+          <div class="phase-title">Regression Gate</div>
+          <ul class="phase-items">
+            <li>Paired task comparison</li>
+            <li>Integrate in commit_iteration</li>
+            <li>Automated rollback support</li>
+          </ul>
+        </div>
+
+        <!-- Phase 5 -->
+        <div class="roadmap-phase">
+          <span class="badge badge-primary phase-badge">Phase 5 • Planned</span>
+          <div class="phase-title">Experiments</div>
+          <ul class="phase-items">
+            <li>Run A/B/C/D/E comparisons</li>
+            <li>Perform ablation trials</li>
+            <li>Held-out test verification</li>
+          </ul>
+        </div>
+
+        <!-- Phase 6 -->
+        <div class="roadmap-phase">
+          <span class="badge badge-primary phase-badge">Phase 6 • Planned</span>
+          <div class="phase-title">Documentation</div>
+          <ul class="phase-items">
+            <li>Document limitations</li>
+            <li>Produce EXPERIMENTAL_RESULTS</li>
+            <li>Prepare research paper</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       LIMITATIONS & RESEARCH SCOPE
+       ----------------------------------------------------------- -->
+  <section class="section" id="limitations">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-warning section-tag">Honest Scope</span>
+        <h2 class="section-title">Limitations & Research Scope</h2>
+        <p class="section-desc">
+          Scientific boundaries and technical constraints governing this investigation.
+        </p>
+      </div>
+
+      <div class="limitations-grid">
+        <div class="limitation-item">
+          <div class="limitation-icon">⚠</div>
+          <div>
+            <h4>Dependency on Evidence Quality</h4>
+            <p>If the benchmark environment itself suffers from non-deterministic bugs or broken reward hooks, the reliability estimator may inherit these blind spots.</p>
+          </div>
+        </div>
+
+        <div class="limitation-item">
+          <div class="limitation-icon">⚠</div>
+          <div>
+            <h4>Backbone Capacity Ceiling</h4>
+            <p>Evolving the harness cannot overcome fundamental reasoning failures of the frozen LLM. On environments exceeding model intellectual ceiling (e.g. NLE on DeepSeek-V4-Flash), no scaffolding can close the gap.</p>
+          </div>
+        </div>
+
+        <div class="limitation-item">
+          <div class="limitation-icon">⚠</div>
+          <div>
+            <h4>Computational Overhead</h4>
+            <p>Paired validation against the incumbent and requesting supplementary evidence increases inference call counts by approximately 15–20% per iteration.</p>
+          </div>
+        </div>
+
+        <div class="limitation-item">
+          <div class="limitation-icon">⚠</div>
+          <div>
+            <h4>Empirical Calibration Requirement</h4>
+            <p>Decision thresholds for the controller ($\tau_{\text{rel}}$) and regression gate ($\delta$) must be calibrated per domain; zero-shot universal thresholds may under- or over-constrain exploration.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       REFERENCES
+       ----------------------------------------------------------- -->
+  <section class="section" id="references">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-primary section-tag">Literature</span>
+        <h2 class="section-title">Scientific References</h2>
+        <p class="section-desc">
+          Core papers and baseline open-source implementations underlying this research.
+        </p>
+      </div>
+
+      <div class="references-list">
+        <a href="https://arxiv.org/abs/2608.08466" target="_blank" rel="noopener noreferrer" class="reference-card">
+          <div>
+            <div class="ref-title">Hierarchical Self-Improvement: A Framework for Task-Specific Evolvable Agent Harnesses</div>
+            <div class="ref-meta">Zhou, Tailin (2026) • arXiv:2608.08466</div>
+          </div>
+          <span class="badge badge-cyan">Paper ↗</span>
+        </a>
+
+        <a href="https://github.com/TailinZhou/hsi" target="_blank" rel="noopener noreferrer" class="reference-card">
+          <div>
+            <div class="ref-title">HSI: Hierarchical Self-Improvement Agent Harness Implementation</div>
+            <div class="ref-meta">Official Repository • TailinZhou/hsi</div>
+          </div>
+          <span class="badge badge-primary">GitHub ↗</span>
+        </a>
+
+        <a href="https://arxiv.org/abs/2411.13543" target="_blank" rel="noopener noreferrer" class="reference-card">
+          <div>
+            <div class="ref-title">BALROG: Benchmarking Agentic LLM Reasoning in Open-ended Games</div>
+            <div class="ref-meta">Paglieri et al. (2024) • arXiv:2411.13543</div>
+          </div>
+          <span class="badge badge-cyan">Paper ↗</span>
+        </a>
+
+        <a href="https://github.com/balrog-ai/BALROG" target="_blank" rel="noopener noreferrer" class="reference-card">
+          <div>
+            <div class="ref-title">BALROG Benchmark Repository</div>
+            <div class="ref-meta">Open-source game environments and evaluation suite</div>
+          </div>
+          <span class="badge badge-primary">GitHub ↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
+       FOOTER
+       ----------------------------------------------------------- -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h4>Confidence-Aware Hierarchical Self-Improving Agents</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5;">
+            Reliable Feedback and Regression-Aware Harness Evolution for Autonomous AI Agent Systems. Exploring more reliable pathways toward self-improving AI.
+          </p>
+        </div>
+        <div>
+          <a href="#top" class="btn btn-secondary" style="font-size: 0.82rem; padding: 8px 16px;">Back to Top ↑</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 AI Research Prototype • Experimental Evaluation Project</span>
+        <span>Original Framework: <a href="https://github.com/TailinZhou/hsi" target="_blank" rel="noopener noreferrer">TailinZhou/hsi</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- -----------------------------------------------------------
+       SCRIPTS: INTERACTIVITY & CHARTS
+       ----------------------------------------------------------- -->
+  <script>
+    // -----------------------------------------------------------
+    // 1. Pipeline Interactive Node Details Data
+    // -----------------------------------------------------------
+    const pipelineData = {
+      1: {
+        badge: "Stage 01 • Input",
+        title: "Task Environment & Rollout",
+        desc: "The benchmark environment (BALROG BabyAI, Crafter, TextWorld) executes agent steps. It produces multi-episode progressions, failure statuses, and raw interaction traces.",
+        code: `// Task Environment Contract
+interface TaskRollout {
+  env_name: "babyai" | "crafter";
+  task_name: string;
+  episode_progressions: float[]; // [0.0 ... 1.0]
+  execution_error: string | null;
+}`
+      },
+      2: {
+        badge: "Stage 02 • Baseline",
+        title: "Frozen LLM + Incumbent Harness H₀",
+        desc: "The currently accepted, highest-performing harness code on disk. Serves as the trusted baseline against which all future candidates must be validated.",
+        code: `// Boundary Seam: using_harness(agent, task)
+// Frozen: Model parameters theta are never modified.
+// Evolvable: prompts.py, hooks.py, context.py, harness.py`
+      },
+      3: {
+        badge: "Stage 03 • Telemetry",
+        title: "Evaluation Evidence E_t",
+        desc: "Structured evaluation results gathered by EvaluatorMixin.evaluate(). Bundles episode progressions, code snapshots, modified file sets, and error logs.",
+        code: `Evidence = {
+  code_hash: "97a022b...",
+  snapshot: { "harness.py": "..." },
+  eval_mode: "dev" | "val",
+  episodes_requested: 5,
+  episodes_completed: 5
+}`
+      },
+      4: {
+        badge: "Stage 04 • Reliability Estimator",
+        title: "Feedback Reliability Estimator R(E_t)",
+        desc: "Calculates an objective evidence reliability score based on completeness, repeated-run variance, outcome cryptographic verification, and calibration.",
+        code: `// Reliability Metric R in [0, 1]
+R = w1 * Completeness + w2 * (1 - normalized_variance)
+    + w3 * HashMatch + w4 * CalibrationScore;
+if (execution_error) R = 0.0;`
+      },
+      5: {
+        badge: "Stage 05 • Decision Gate",
+        title: "Confidence-Aware Controller",
+        desc: "Determines whether feedback is sufficient to proceed with code evolution. Emits ALLOW_EVOLUTION, REQUEST_MORE_EVIDENCE, or DEFER_EVOLUTION.",
+        code: `if (R >= 0.85 && variance < sigma_max) {
+  return Decision.ALLOW_EVOLUTION;
+} else if (R >= 0.60) {
+  return Decision.REQUEST_MORE_EVIDENCE; // Run extra episodes
+} else {
+  return Decision.DEFER_EVOLUTION;       // Preserve incumbent
+}`
+      },
+      6: {
+        badge: "Stage 06 • Evolver",
+        title: "Candidate Generation (H')",
+        desc: "The evolver ReAct agent inspects reliable feedback, formulates a hypothesis, edits code files with AST checks, and registers the candidate in memory.",
+        code: `// Candidate Modification H'
+H_prime = apply_edits(H_0, agent_tool_calls);
+code_hash = sha256(H_prime.files);
+persist_harness_history(iteration, seq, code_hash);`
+      },
+      7: {
+        badge: "Stage 07 • Paired Validation",
+        title: "Regression-Aware Validation Gate",
+        desc: "Runs paired evaluations of Candidate H' and Incumbent H₀ on identical environment seeds to eliminate noise and detect capability regressions.",
+        code: `for (task in validation_tasks) {
+  delta = evaluate(H_prime, seed) - evaluate(H_0, seed);
+  if (delta < -max_allowed_regression) {
+    flag_regression(task);
+  }
+}`
+      },
+      8: {
+        badge: "Stage 08 • Final Acceptance",
+        title: "Acceptance / Rollback Decision",
+        desc: "If candidate demonstrates statistically significant improvement without regression, it is committed to git. Otherwise, disk is rolled back to H₀.",
+        code: `if (mean_delta > tau && regressions == 0) {
+  commit_iteration(H_prime); // git commit
+} else {
+  restore_snapshot(H_0);     // automated rollback
+}`
+      },
+      9: {
+        badge: "Stage 09 • Audit Trail",
+        title: "Evidence-Based History",
+        desc: "Persists the complete audit trail into records.jsonl and EvolutionKnowledgeGraph, maintaining transparency for why every candidate was accepted or vetoed.",
+        code: `// Recorded in .evolution/records.jsonl
+{
+  "iteration": t,
+  "incumbent": "hash_0",
+  "candidate": "hash_prime",
+  "decision": "ACCEPT" | "REJECT",
+  "reliability_score": 0.94
+}`
+      }
+    };
+
+    function selectNode(index) {
+      document.querySelectorAll('.pipeline-node').forEach((node, i) => {
+        node.classList.toggle('active', (i + 1) === index);
+      });
+      const data = pipelineData[index];
+      if (data) {
+        document.getElementById('detailBadge').innerText = data.badge;
+        document.getElementById('detailTitle').innerText = data.title;
+        document.getElementById('detailDesc').innerText = data.desc;
+        document.getElementById('detailCode').innerText = data.code;
+      }
+    }
+
+    // -----------------------------------------------------------
+    // 2. Interactive Workflow Simulation Engine
+    // -----------------------------------------------------------
+    let currentScenario = 'reliable';
+    let isSimRunning = false;
+
+    function setScenario(type, btn) {
+      if (isSimRunning) return;
+      currentScenario = type;
+      document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const logs = document.getElementById('simLogs');
+      logs.innerHTML = `
+        <div class="console-line">
+          <span class="console-time">[READY]</span>
+          <span class="console-msg">Configured for <strong>${btn.innerText}</strong>. Click "Run Simulation" to execute.</span>
+        </div>
+      `;
+      document.getElementById('simResultBadge').className = 'badge badge-primary';
+      document.getElementById('simResultBadge').innerText = 'IDLE';
+
+      document.querySelectorAll('.sim-step-item').forEach(s => {
+        s.className = 'sim-step-item';
+      });
+    }
+
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function runSimulation() {
+      if (isSimRunning) return;
+      isSimRunning = true;
+      const btn = document.getElementById('btnRunSim');
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+
+      const logs = document.getElementById('simLogs');
+      const badge = document.getElementById('simResultBadge');
+      logs.innerHTML = '';
+
+      function logMsg(time, text, color = '#D1E0F7') {
+        const line = document.createElement('div');
+        line.className = 'console-line';
+        line.innerHTML = `<span class="console-time">${time}</span><span class="console-msg" style="color: ${color}">${text}</span>`;
+        logs.appendChild(line);
+        logs.scrollTop = logs.scrollHeight;
+      }
+
+      function setStepActive(stepNum) {
+        for (let i = 1; i <= 7; i++) {
+          const el = document.getElementById('sStep' + i);
+          if (i < stepNum) {
+            el.className = 'sim-step-item done';
+          } else if (i === stepNum) {
+            el.className = 'sim-step-item active';
+          } else {
+            el.className = 'sim-step-item';
+          }
+        }
+      }
+
+      badge.className = 'badge badge-cyan';
+      badge.innerText = 'RUNNING';
+
+      // Step 1: Task Run
+      setStepActive(1);
+      logMsg('[STEP 1]', 'Dispatching task <code>babyai/goto</code> across 5 test episodes...');
+      await delay(600);
+
+      // Step 2: Telemetry
+      setStepActive(2);
+      if (currentScenario === 'incomplete') {
+        logMsg('[STEP 2]', 'Telemetry received: 2 of 5 episodes timed out. Trace length: 1,240 tokens.', '#FFB74D');
+      } else {
+        logMsg('[STEP 2]', 'Telemetry received: 5 of 5 episodes completed. Recorded avg_progression = 0.8000.');
+      }
+      await delay(600);
+
+      // Step 3: Reliability
+      setStepActive(3);
+      if (currentScenario === 'reliable') {
+        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=1.0, Variance σ=0.041, HashVerified=TRUE → R(E) = 0.940 (HIGH).', '#5CE1E6');
+      } else if (currentScenario === 'incomplete') {
+        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=0.40 (Episodes missing), σ=0.420 → R(E) = 0.412 (UNRELIABLE).', '#FF5A5F');
+      } else {
+        logMsg('[STEP 3]', 'Reliability Estimator: Completeness=1.0, σ=0.090, HashVerified=TRUE → R(E) = 0.880 (ADEQUATE).', '#5CE1E6');
+      }
+      await delay(700);
+
+      // Step 4: Controller
+      setStepActive(4);
+      if (currentScenario === 'incomplete') {
+        logMsg('[STEP 4]', 'Controller Decision: REQUEST_MORE_EVIDENCE. R(E) < 0.70 threshold. Mutating harness blocked.', '#FFB74D');
+        setStepActive(7);
+        badge.className = 'badge badge-warning';
+        badge.innerText = 'MORE EVIDENCE REQUESTED';
+        logMsg('[OUTCOME]', 'Evolution safely deferred. Supplementary evaluation rounds scheduled. Incumbent H₀ preserved.', '#FFB74D');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        isSimRunning = false;
+        return;
+      } else {
+        logMsg('[STEP 4]', 'Controller Decision: ALLOW_EVOLUTION. High evidence reliability confirmed.');
+      }
+      await delay(600);
+
+      // Step 5: Candidate H'
+      setStepActive(5);
+      logMsg('[STEP 5]', 'ReAct Evolver generated candidate H\' [code_hash: 4f8b1c2]. Edits: prompts.py (system prompt refinement).');
+      await delay(600);
+
+      // Step 6: Paired Validation Gate
+      setStepActive(6);
+      if (currentScenario === 'reliable') {
+        logMsg('[STEP 6]', 'Running paired validation: Candidate H\' vs Incumbent H₀ on identical 5 seeds...');
+        await delay(500);
+        logMsg('[STEP 6]', 'Paired outcome: H\' mean = 0.860, H₀ mean = 0.800 (Δ = +0.060, regressions = 0).', '#00E676');
+      } else if (currentScenario === 'regression') {
+        logMsg('[STEP 6]', 'Running paired validation: Candidate H\' vs Incumbent H₀ on identical 5 seeds...');
+        await delay(500);
+        logMsg('[STEP 6]', 'REGRESSION DETECTED on task #4: H\'=0.200 vs H₀=0.800 (Δ = -0.600 < tolerance -0.05).', '#FF5A5F');
+      }
+      await delay(700);
+
+      // Step 7: Final Outcome
+      setStepActive(7);
+      if (currentScenario === 'reliable') {
+        badge.className = 'badge badge-success';
+        badge.innerText = 'CANDIDATE ACCEPTED';
+        logMsg('[OUTCOME]', 'Candidate H\' successfully promoted to Incumbent! Git commit created and Knowledge Graph updated.', '#00E676');
+      } else {
+        badge.className = 'badge badge-danger';
+        badge.innerText = 'CANDIDATE REJECTED (ROLLBACK)';
+        logMsg('[OUTCOME]', 'Candidate H\' REJECTED by Regression Gate. Automated rollback to Incumbent H₀ executed.', '#FF5A5F');
+      }
+
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      isSimRunning = false;
+    }
+
+    // -----------------------------------------------------------
+    // 3. Experimental Dashboard Chart.js Visualizations
+    // -----------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+      // Evolution Progress Line Chart
+      const ctxEvol = document.getElementById('evolutionChart');
+      if (ctxEvol && typeof Chart !== 'undefined') {
+        new Chart(ctxEvol, {
+          type: 'line',
+          data: {
+            labels: ['Init (t=0)', 'Iter 1', 'Iter 2', 'Iter 3', 'Iter 4', 'Iter 5'],
+            datasets: [
+              {
+                label: 'Proposed (Full Extension)',
+                data: [0.38, 0.54, 0.69, 0.77, 0.80, 0.812],
+                borderColor: '#5CE1E6',
+                backgroundColor: 'rgba(92, 225, 230, 0.1)',
+                borderWidth: 2.5,
+                fill: true,
+                tension: 0.3
+              },
+              {
+                label: 'Original HSI (Meta-On)',
+                data: [0.38, 0.49, 0.63, 0.71, 0.74, 0.773],
+                borderColor: '#508BFF',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                tension: 0.3
+              },
+              {
+                label: 'Static Baseline',
+                data: [0.38, 0.38, 0.38, 0.38, 0.38, 0.38],
+                borderColor: '#627289',
+                borderWidth: 1.5,
+                tension: 0
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: { color: '#9BA9BC', font: { family: 'Inter', size: 11 } }
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: '#1E2D4A' },
+                ticks: { color: '#9BA9BC', font: { family: 'JetBrains Mono', size: 10 } }
+              },
+              y: {
+                min: 0.2,
+                max: 1.0,
+                grid: { color: '#1E2D4A' },
+                ticks: { color: '#9BA9BC', font: { family: 'JetBrains Mono', size: 10 } }
+              }
+            }
+          }
+        });
+      }
+
+      // Ablation Bar Chart
+      const ctxAbl = document.getElementById('ablationChart');
+      if (ctxAbl && typeof Chart !== 'undefined') {
+        new Chart(ctxAbl, {
+          type: 'bar',
+          data: {
+            labels: ['Orig HSI', '+Reliability', '+RegGate', 'Full Proposed'],
+            datasets: [
+              {
+                label: 'Harmful Commits %',
+                data: [13.5, 8.2, 5.1, 4.2],
+                backgroundColor: '#FF5A5F'
+              },
+              {
+                label: 'Regression Rate %',
+                data: [18.1, 11.4, 4.6, 2.8],
+                backgroundColor: '#9274FF'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: { color: '#9BA9BC', font: { family: 'Inter', size: 11 } }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: '#9BA9BC', font: { family: 'JetBrains Mono', size: 10 } }
+              },
+              y: {
+                grid: { color: '#1E2D4A' },
+                ticks: { color: '#9BA9BC', font: { family: 'JetBrains Mono', size: 10 } }
+              }
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+

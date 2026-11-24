@@ -157,6 +157,37 @@ def _git_diff_stat(git_controller, hash_a: str, hash_b: str) -> str:
 
 
 # ─── EVOLVABLE: Strategy logic (modify freely) ────────────────────
+def _get_top_k_nodes(agent, k: int = 5):
+    """Retrieve top-k main-line nodes by reward, excluding meta/auxiliary records."""
+    from src.react_loop.state import reward_to_scalar
+    tracker = getattr(agent, "evolution_tracker", None)
+    if not tracker or not getattr(tracker, "records", None):
+        return []
+    candidates = []
+    for r in tracker.records:
+        meta = getattr(r, "metadata", None) or {}
+        if meta.get("type") == "meta_evolve":
+            continue
+        if meta.get("operation_type") in ("crossover", "ensemble"):
+            continue
+        if hasattr(r, "iter_pool") and callable(getattr(r, "iter_pool")):
+            try:
+                for entry in r.iter_pool():
+                    candidates.append({
+                        "git_hash": entry.get("new_commit", ""),
+                        "reward": reward_to_scalar(entry.get("reward", 0.0)),
+                    })
+                continue
+            except (TypeError, Exception):
+                pass
+        candidates.append({
+            "git_hash": getattr(r, "new_commit", ""),
+            "reward": reward_to_scalar(getattr(r, "reward", 0.0)),
+        })
+    candidates.sort(key=lambda x: x["reward"], reverse=True)
+    return candidates[:k]
+
+
 def _make_too_few_result(agent):
     """Build a SeedResult for the ensemble:too_few fallback path."""
     current_head = agent.git_controller.get_current_commit() or ""

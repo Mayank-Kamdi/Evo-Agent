@@ -876,7 +876,23 @@ Analyze the similarities and differences between A and B."""
         # Sort by iteration so backbone edges are correct
         records.sort(key=lambda r: r.iteration)
         for r in records:
-            for entry in r.iter_pool():
+            entries = []
+            if hasattr(r, "iter_pool") and callable(getattr(r, "iter_pool")):
+                try:
+                    entries = list(r.iter_pool())
+                except (TypeError, Exception):
+                    entries = []
+            if not entries:
+                new_commits = r.new_commit if isinstance(r.new_commit, list) else ([r.new_commit] if getattr(r, "new_commit", None) else [])
+                rewards = r.reward if isinstance(r.reward, list) else ([r.reward] if getattr(r, "reward", None) is not None else [0.0])
+                for i, c in enumerate(new_commits):
+                    rew = rewards[i] if i < len(rewards) else 0.0
+                    entries.append({
+                        "new_commit": c,
+                        "reward": rew,
+                        "committed_eval_mode": r.metadata.get("committed_eval_mode", "dev") if hasattr(r, "metadata") and isinstance(r.metadata, dict) else "dev",
+                    })
+            for entry in entries:
                 commit_hash = entry["new_commit"]
                 if not commit_hash or commit_hash in self.nodes:
                     continue

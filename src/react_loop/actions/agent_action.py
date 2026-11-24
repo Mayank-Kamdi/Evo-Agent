@@ -209,7 +209,7 @@ class AgentActionExecutor(FileOpsMixin, HistoryMixin, EvaluatorMixin):
                 if f in METADATA_FILES:
                     continue
                 full_path = os.path.join(root, f)
-                rel_path = os.path.relpath(full_path, self.agent_code_dir)
+                rel_path = os.path.relpath(full_path, self.agent_code_dir).replace('\\', '/')
                 file_hashes.append((rel_path, self._compute_file_hash(full_path)))
                 if return_contents:
                     try:
@@ -259,7 +259,7 @@ class AgentActionExecutor(FileOpsMixin, HistoryMixin, EvaluatorMixin):
                 else:
                     continue
                 full_path = os.path.join(root, f)
-                rel_path = os.path.relpath(full_path, self.agent_code_dir)
+                rel_path = os.path.relpath(full_path, self.agent_code_dir).replace('\\', '/')
                 hashes[rel_path] = self._compute_file_hash(full_path)
         return hashes
 
@@ -399,7 +399,7 @@ class AgentActionExecutor(FileOpsMixin, HistoryMixin, EvaluatorMixin):
                     continue
 
                 file_path = os.path.join(root, file)
-                relative_path = os.path.relpath(file_path, self.agent_code_dir)
+                relative_path = os.path.relpath(file_path, self.agent_code_dir).replace('\\', '/')
 
                 try:
                     with open(file_path, 'r', encoding='utf-8') as f:
@@ -697,7 +697,7 @@ class AgentActionExecutor(FileOpsMixin, HistoryMixin, EvaluatorMixin):
 
         # Add to the modified files set -> included in git commit (BOOTSTRAP.md is tracked + protected)
         if self.agent_code_dir:
-            rel_path = os.path.relpath(bootstrap_path, self.agent_code_dir)
+            rel_path = os.path.relpath(bootstrap_path, self.agent_code_dir).replace('\\', '/')
             self._modified_files.add(rel_path)
 
             if self.state is not None:
@@ -799,7 +799,16 @@ class AgentActionExecutor(FileOpsMixin, HistoryMixin, EvaluatorMixin):
                         continue
                     if meta.get("operation_type") == "ensemble":
                         continue
-                    reward_str = fmt_reward(rec.primary_reward() if hasattr(rec, "primary_reward") else 0.0)
+                    if hasattr(rec, "primary_reward") and callable(getattr(rec, "primary_reward")):
+                        r_val = rec.primary_reward()
+                    elif hasattr(rec, "reward"):
+                        if isinstance(rec.reward, list):
+                            r_val = rec.reward[0] if rec.reward else 0.0
+                        else:
+                            r_val = rec.reward
+                    else:
+                        r_val = 0.0
+                    reward_str = fmt_reward(r_val)
                     break
 
         # Build the new record (newest on top, so the next start can verify the last prediction at a glance)
@@ -840,7 +849,7 @@ class AgentActionExecutor(FileOpsMixin, HistoryMixin, EvaluatorMixin):
             return f"Error saving meta_bootstrap: {e}"
 
         if self.agent_code_dir:
-            rel_path = os.path.relpath(bootstrap_path, self.agent_code_dir)
+            rel_path = os.path.relpath(bootstrap_path, self.agent_code_dir).replace('\\', '/')
             self._modified_files.add(rel_path)
             if self.state is not None:
                 self.state.modifications_made.append({
