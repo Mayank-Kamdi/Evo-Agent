@@ -702,6 +702,178 @@
     }
 
     /* -------------------------------------------------------------
+       AUTHORS & TEAM SECTION
+       ------------------------------------------------------------- */
+    .authors-hero-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 18px;
+      margin-bottom: 22px;
+      padding: 16px 20px;
+      background: rgba(19, 30, 51, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    .authors-hero-title {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--highlight-cyan);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .authors-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .author-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 24, 39, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9999px;
+      padding: 5px 14px 5px 6px;
+      font-size: 0.84rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+    .author-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .guide-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(80, 139, 255, 0.14);
+      border: 1px solid rgba(80, 139, 255, 0.4);
+      border-radius: 9999px;
+      padding: 5px 16px 5px 8px;
+      font-size: 0.84rem;
+      color: #c7dbff;
+      font-weight: 600;
+    }
+    .guide-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--highlight-cyan);
+      color: #080D18;
+      font-size: 0.65rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .team-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px 20px;
+      text-align: center;
+      transition: var(--transition-base);
+    }
+    .team-card:hover {
+      border-color: var(--primary-accent);
+      transform: translateY(-3px);
+    }
+    .team-card-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      margin: 0 auto 14px auto;
+      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: 2px solid var(--border-highlight);
+    }
+    .team-name {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 4px;
+    }
+    .team-role {
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      color: var(--primary-accent);
+      margin-bottom: 8px;
+    }
+    .team-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .guide-featured-card {
+      background: linear-gradient(135deg, rgba(19, 30, 51, 0.95), rgba(16, 24, 39, 0.95));
+      border: 1px solid rgba(92, 225, 230, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-top: 10px;
+    }
+    .guide-featured-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--highlight-cyan), var(--primary-accent));
+      color: #080D18;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+    .guide-info h3 {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      color: var(--text-light);
+      margin-bottom: 4px;
+    }
+    .guide-designation {
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      color: var(--highlight-cyan);
+      margin-bottom: 6px;
+    }
+    .guide-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* -------------------------------------------------------------
        INTERACTIVE WORKFLOW SIMULATION SECTION
        ------------------------------------------------------------- */
     .sim-card {
@@ -1117,6 +1289,8 @@
     @media (max-width: 1024px) {
       .hero-grid { grid-template-columns: 1fr; }
       .challenges-grid, .modules-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .guide-featured-card { flex-direction: column; text-align: center; }
       .charts-grid { grid-template-columns: 1fr; }
       .roadmap-track { grid-template-columns: repeat(2, 1fr); }
       .limitations-grid { grid-template-columns: 1fr; }
@@ -1129,6 +1303,7 @@
       .nav-links { display: none; }
       .hero-title { font-size: 2.4rem; }
       .stats-row { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr; }
       .roadmap-track { grid-template-columns: 1fr; }
       .sim-steps-track { grid-template-columns: repeat(2, 1fr); }
     }
@@ -1156,10 +1331,11 @@
       <ul class="nav-links">
         <li><a href="#overview">Overview</a></li>
         <li><a href="#architecture">Architecture</a></li>
-        <li><a href="#modules">Core Modules</a></li>
+        <li><a href="#modules">Solutions</a></li>
         <li><a href="#simulation">Live Simulation</a></li>
         <li><a href="#experiments">Dashboard</a></li>
         <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#team">Team</a></li>
       </ul>
 
       <div class="nav-actions">
@@ -1187,6 +1363,21 @@
         <p class="hero-subtitle">
           Extending Hierarchical Self-Improvement (HSI) with dynamic feedback reliability estimation, uncertainty-aware harness evolution, and regression-preventing validation gates.
         </p>
+
+        <!-- Authors & Supervision Hero Block -->
+        <div class="authors-hero-wrap">
+          <div class="authors-hero-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Research Authors & Supervision
+          </div>
+          <div class="authors-chips">
+            <span class="author-chip"><span class="author-avatar">MK</span> Mayank Kamdi</span>
+            <span class="author-chip"><span class="author-avatar">SS</span> Sahil Somyani</span>
+            <span class="author-chip"><span class="author-avatar">ND</span> Nandini Dhale</span>
+            <span class="author-chip"><span class="author-avatar">TG</span> Trupti Gondane</span>
+            <span class="guide-chip"><span class="guide-avatar">★</span> Guide: Dr. Supriya Sawashere</span>
+          </div>
+        </div>
 
         <div class="hero-highlights">
           <div class="highlight-pill">
@@ -1644,6 +1835,84 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
             </li>
           </ul>
         </div>
+
+        <!-- Module D: Multi-Seed Monte Carlo Rollouts -->
+        <div class="module-card accent-blue">
+          <div class="module-header">
+            <span class="badge badge-primary">MODULE D</span>
+            <h3 class="module-title">Adaptive Multi-Seed Rollouts</h3>
+          </div>
+          <p class="module-purpose">
+            Dynamically scales evaluation sample depth $\kappa$ when high variance is detected, eliminating stochastic flukes before modifying harness code.
+          </p>
+          <div class="module-features-title">Statistical Invariants</div>
+          <ul class="module-features-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Variance-Triggered Rollouts:</strong> Automatically provisions extra random seeds whenever trajectory variance $\sigma^2 > \tau_{var}$.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Jackknife Variance Estimation:</strong> Detects single-seed leverage outliers to avoid accepting lucky random walk breakthroughs.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Adaptive Token Allocation:</strong> Concentrates model thinking budget on ambiguous edge cases while fast-pathing consensus runs.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Module E: Automated Checkpointing & Snapshot Seam -->
+        <div class="module-card accent-purple">
+          <div class="module-header">
+            <span class="badge badge-primary">MODULE E</span>
+            <h3 class="module-title">Automated Rollback Checkpointing</h3>
+          </div>
+          <p class="module-purpose">
+            Zero-leak snapshot tree integrated into <code>agent_evaluator.py</code> and <code>evolve.py</code>, guaranteeing instant rollback on validation degradation.
+          </p>
+          <div class="module-features-title">Integrity Guarantees</div>
+          <ul class="module-features-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Atomic Git Checkpointing:</strong> Every candidate mutation is tagged with an isolated Git commit ref prior to sandbox trial execution.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Fresh Import Invariance:</strong> Purges Python <code>sys.modules</code> caches during candidate reload to prevent phantom module leaks.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Zero-Residual Recovery:</strong> Restores harness disk state instantly upon regression trigger without manual intervention.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Module F: Failure-Attributed Knowledge Graph -->
+        <div class="module-card accent-cyan">
+          <div class="module-header">
+            <span class="badge badge-cyan">MODULE F</span>
+            <h3 class="module-title">Failure-Attributed Knowledge Graph</h3>
+          </div>
+          <p class="module-purpose">
+            Multi-factor failure taxonomy extending <code>src/react_loop/knowledge_graph.py</code>, ensuring the evolver never repeats disproven code modifications.
+          </p>
+          <div class="module-features-title">Causal Attribution Engine</div>
+          <ul class="module-features-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Error Disentanglement:</strong> Distinguishes environment timeout, LLM context limits, and harness code syntax bugs.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Negative Feedback Synthesis:</strong> Injects structured historical counterexamples directly into <code>get_iteration_begin_prompt()</code>.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span><strong>Lineage Tracking:</strong> Preserves ancestor modification graphs across all meta-evolution cycles for auditability.</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -2056,6 +2325,67 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
   </section>
 
   <!-- -----------------------------------------------------------
+       RESEARCH TEAM & PROJECT MENTORSHIP
+       ----------------------------------------------------------- -->
+  <section class="section" id="team">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-primary section-tag">Research Team</span>
+        <h2 class="section-title">Authors & Project Mentorship</h2>
+        <p class="section-desc">
+          Advancing safe, confidence-aware self-improvement and regression prevention in autonomous LLM harnesses.
+        </p>
+      </div>
+
+      <div class="team-grid">
+        <!-- Author 1: Mayank Kamdi -->
+        <div class="team-card">
+          <div class="team-card-avatar">MK</div>
+          <div class="team-name">Mayank Kamdi</div>
+          <div class="team-role">Lead Research & Architecture</div>
+          <p class="team-desc">Core system architecture, feedback reliability estimation, and regression-aware validation lifecycle design.</p>
+        </div>
+
+        <!-- Author 2: Sahil Somyani -->
+        <div class="team-card">
+          <div class="team-card-avatar">SS</div>
+          <div class="team-name">Sahil Somyani</div>
+          <div class="team-role">Evaluation & Benchmarking</div>
+          <p class="team-desc">BALROG benchmark suite integration, environment runtime calibration, and trajectory trace analysis.</p>
+        </div>
+
+        <!-- Author 3: Nandini Dhale -->
+        <div class="team-card">
+          <div class="team-card-avatar">ND</div>
+          <div class="team-name">Nandini Dhale</div>
+          <div class="team-role">Policy & Controller Design</div>
+          <p class="team-desc">Confidence-aware decision boundary formulation, LCB thresholding, and uncertainty-aware state policy.</p>
+        </div>
+
+        <!-- Author 4: Trupti Gondane -->
+        <div class="team-card">
+          <div class="team-card-avatar">TG</div>
+          <div class="team-name">Trupti Gondane</div>
+          <div class="team-role">Telemetry & Knowledge Graphs</div>
+          <p class="team-desc">Knowledge graph failure attribution, evidence validation telemetry, and experimental dashboard analytics.</p>
+        </div>
+      </div>
+
+      <!-- Project Guide: Dr. Supriya Sawashere -->
+      <div class="guide-featured-card">
+        <div class="guide-featured-avatar">SS</div>
+        <div class="guide-info">
+          <div class="guide-designation">PROJECT GUIDE & FACULTY MENTOR</div>
+          <h3>Dr. Supriya Sawashere</h3>
+          <p class="guide-desc">
+            Academic supervision, research methodology guidance, experimental verification framework, and foundational advisory on autonomous self-improving AI agent architectures.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- -----------------------------------------------------------
        REFERENCES
        ----------------------------------------------------------- -->
   <section class="section" id="references">
@@ -2108,6 +2438,20 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
           </div>
           <span class="badge badge-primary">GitHub ↗</span>
         </a>
+      </div>
+
+      <!-- BibTeX Citation Block -->
+      <div style="margin-top: 36px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--highlight-cyan); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">BibTeX Citation</span>
+        </div>
+        <pre style="margin:0; background:rgba(8,13,24,0.7); padding:16px; border-radius:var(--radius-md); font-family:var(--font-mono); font-size:0.82rem; color:var(--text-main); overflow-x:auto; line-height:1.5;"><code>@misc{kamdi2026evoagent,
+  title={Evo-Agent: Confidence-Aware Hierarchical Self-Improving Agents through Reliable Feedback and Regression-Aware Harness Evolution},
+  author={Mayank Kamdi and Sahil Somyani and Nandini Dhale and Trupti Gondane},
+  note={Under the guidance of Dr. Supriya Sawashere},
+  year={2026},
+  howpublished={\url{https://github.com/Mayank-Kamdi/Evo-Agent}}
+}</code></pre>
       </div>
     </div>
   </section>
