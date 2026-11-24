@@ -1,0 +1,14 @@
+# Ignore Python runtime files from Vercel static deployments
+requirements.txt
+pyproject.toml
+main.py
+main_init.py
+main_final.py
+run_tests.py
+*.py
+src/
+benchmark_config_goal/
+godel_evolution_init/
+research/
+paper/
+tests/
