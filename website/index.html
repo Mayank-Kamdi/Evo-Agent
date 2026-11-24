@@ -795,94 +795,231 @@
 
     .team-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 26px;
+      margin-bottom: 30px;
     }
     .team-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 24px 20px;
-      text-align: center;
-      transition: var(--transition-base);
+      padding: 30px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .team-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--palette-denim), var(--palette-powder));
+      opacity: 0.85;
     }
     .team-card:hover {
-      border-color: var(--primary-accent);
-      transform: translateY(-3px);
+      border-color: var(--palette-denim);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(118, 159, 205, 0.15);
+    }
+    .team-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
     }
     .team-card-avatar {
-      width: 56px;
-      height: 56px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
-      margin: 0 auto 14px auto;
-      background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
-      color: #fff;
+      background: linear-gradient(135deg, var(--palette-denim), var(--palette-powder));
+      color: #060A12;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      border: 2px solid var(--border-highlight);
+      border: 2px solid rgba(247, 251, 252, 0.35);
+      flex-shrink: 0;
+    }
+    .team-card-title-wrap {
+      flex: 1;
     }
     .team-name {
       font-family: var(--font-heading);
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--text-light);
-      margin-bottom: 4px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--palette-ice);
+      margin-bottom: 3px;
     }
     .team-role {
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       font-family: var(--font-mono);
-      color: var(--primary-accent);
-      margin-bottom: 8px;
+      color: var(--palette-sky);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .team-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .team-tag {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      padding: 3px 9px;
+      border-radius: 4px;
+      background: rgba(185, 215, 234, 0.1);
+      border: 1px solid rgba(185, 215, 234, 0.22);
+      color: var(--palette-powder);
     }
     .team-desc {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      line-height: 1.45;
+      font-size: 0.88rem;
+      color: var(--palette-sky);
+      line-height: 1.5;
+      margin-bottom: 16px;
     }
-    .guide-featured-card {
-      background: linear-gradient(135deg, rgba(19, 30, 51, 0.95), rgba(16, 24, 39, 0.95));
-      border: 1px solid rgba(92, 225, 230, 0.35);
-      border-radius: var(--radius-lg);
-      padding: 28px 32px;
+    .team-contrib-title {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--palette-denim);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .team-contrib-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .team-contrib-list li {
+      font-size: 0.84rem;
+      color: var(--palette-powder);
+      line-height: 1.45;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .team-contrib-list li svg {
+      width: 15px;
+      height: 15px;
+      color: var(--palette-denim);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .team-card-footer {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid rgba(185, 215, 234, 0.12);
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    .team-module-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--palette-sky);
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+    }
+    .team-card-links {
+      display: flex;
+      gap: 10px;
+    }
+    .team-link-btn {
+      color: var(--palette-powder);
+      text-decoration: none;
+      font-size: 0.78rem;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .team-link-btn:hover {
+      color: var(--palette-ice);
+    }
+    .guide-featured-card {
+      background: linear-gradient(135deg, rgba(16, 27, 46, 0.95), rgba(11, 19, 34, 0.95));
+      border: 1px solid rgba(118, 159, 205, 0.4);
+      border-radius: var(--radius-lg);
+      padding: 32px 36px;
+      display: flex;
+      align-items: flex-start;
       gap: 28px;
       margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .guide-featured-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      bottom: 0;
+      background: linear-gradient(180deg, var(--palette-ice), var(--palette-denim));
     }
     .guide-featured-avatar {
-      width: 72px;
-      height: 72px;
+      width: 76px;
+      height: 76px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--highlight-cyan), var(--primary-accent));
-      color: #080D18;
+      background: linear-gradient(135deg, var(--palette-sky), var(--palette-denim));
+      color: #060A12;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       font-weight: 800;
       flex-shrink: 0;
-      border: 3px solid rgba(255, 255, 255, 0.2);
+      border: 3px solid rgba(247, 251, 252, 0.4);
     }
-    .guide-info h3 {
-      font-family: var(--font-heading);
-      font-size: 1.25rem;
-      color: var(--text-light);
-      margin-bottom: 4px;
+    .guide-info {
+      flex: 1;
     }
     .guide-designation {
       font-size: 0.82rem;
       font-family: var(--font-mono);
-      color: var(--highlight-cyan);
-      margin-bottom: 6px;
+      color: var(--palette-denim);
+      margin-bottom: 4px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
     }
     .guide-desc {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      line-height: 1.5;
+      font-size: 0.92rem;
+      color: var(--palette-sky);
+      line-height: 1.6;
+    }
+    .guide-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(185, 215, 234, 0.16);
+      margin-top: 16px;
+    }
+    .guide-meta-item-title {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--palette-denim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .guide-meta-item-val {
+      font-size: 0.84rem;
+      color: var(--palette-ice);
+      line-height: 1.4;
     }
 
     /* -------------------------------------------------------------
@@ -1319,6 +1456,7 @@
       .hero-title { font-size: 2.4rem; }
       .stats-row { grid-template-columns: 1fr; }
       .team-grid { grid-template-columns: 1fr; }
+      .guide-meta-grid { grid-template-columns: 1fr; }
       .roadmap-track { grid-template-columns: 1fr; }
       .sim-steps-track { grid-template-columns: repeat(2, 1fr); }
     }
@@ -2359,46 +2497,222 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
       <div class="team-grid">
         <!-- Author 1: Mayank Kamdi -->
         <div class="team-card">
-          <div class="team-card-avatar">MK</div>
-          <div class="team-name">Mayank Kamdi</div>
-          <div class="team-role">Lead Research & Architecture</div>
-          <p class="team-desc">Core system architecture, feedback reliability estimation, and regression-aware validation lifecycle design.</p>
+          <div class="team-card-header">
+            <div class="team-card-avatar">MK</div>
+            <div class="team-card-title-wrap">
+              <div class="team-name">Mayank Kamdi</div>
+              <div class="team-role">Lead AI Researcher & System Architect</div>
+            </div>
+          </div>
+          <div class="team-badge-row">
+            <span class="team-tag">Lead Researcher</span>
+            <span class="team-tag">System Architecture</span>
+            <span class="team-tag">Reliability Formulation</span>
+          </div>
+          <p class="team-desc">
+            Spearheads the core theoretical formulation, feedback reliability metric $R(E)$, and regression-aware harness evolution lifecycle for the Evo-Agent framework.
+          </p>
+          <div class="team-contrib-title">Key Responsibilities & Contributions</div>
+          <ul class="team-contrib-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Mathematical formulation of multi-factor evidence vectors: completeness, variance, and Brier calibration.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Architected the paired candidate validation gate (<code>commit_iteration</code>) preventing cross-task regressions.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Implemented atomic Git checkpointing and fresh import cache purging for zero-leak rollback verification.</span>
+            </li>
+          </ul>
+          <div class="team-card-footer">
+            <div class="team-module-chip">
+              <span class="pulsing-dot" style="width:6px; height:6px;"></span>
+              <span>Owner: Reliability & Validation Seam</span>
+            </div>
+            <div class="team-card-links">
+              <a href="https://github.com/Mayank-Kamdi" target="_blank" rel="noopener noreferrer" class="team-link-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                <span>GitHub</span>
+              </a>
+            </div>
+          </div>
         </div>
 
         <!-- Author 2: Sahil Somyani -->
         <div class="team-card">
-          <div class="team-card-avatar">SS</div>
-          <div class="team-name">Sahil Somyani</div>
-          <div class="team-role">Evaluation & Benchmarking</div>
-          <p class="team-desc">BALROG benchmark suite integration, environment runtime calibration, and trajectory trace analysis.</p>
+          <div class="team-card-header">
+            <div class="team-card-avatar">SS</div>
+            <div class="team-card-title-wrap">
+              <div class="team-name">Sahil Somyani</div>
+              <div class="team-role">Benchmark Evaluation & Environment Lead</div>
+            </div>
+          </div>
+          <div class="team-badge-row">
+            <span class="team-tag">Benchmark Lead</span>
+            <span class="team-tag">RL Environments</span>
+            <span class="team-tag">Monte Carlo Sampling</span>
+          </div>
+          <p class="team-desc">
+            Oversees benchmark pipeline execution, multi-episode trajectory logging, and environment variance profiling across BALROG game suites.
+          </p>
+          <div class="team-contrib-title">Key Responsibilities & Contributions</div>
+          <ul class="team-contrib-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Integrated BALROG environments (BabyAI, Crafter, TextWorld) with isolated gym execution runtimes.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Engineered adaptive multi-seed Monte Carlo evaluation protocols (&kappa;=15) to detect stochastic environment flukes.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Calibrated telemetry extraction pipes to capture token consumption, wall-clock latency, and step action logs.</span>
+            </li>
+          </ul>
+          <div class="team-card-footer">
+            <div class="team-module-chip">
+              <span class="pulsing-dot" style="width:6px; height:6px;"></span>
+              <span>Owner: Monte Carlo Rollouts</span>
+            </div>
+            <div class="team-card-links">
+              <a href="#experiments" class="team-link-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                <span>Benchmarks</span>
+              </a>
+            </div>
+          </div>
         </div>
 
         <!-- Author 3: Nandini Dhale -->
         <div class="team-card">
-          <div class="team-card-avatar">ND</div>
-          <div class="team-name">Nandini Dhale</div>
-          <div class="team-role">Policy & Controller Design</div>
-          <p class="team-desc">Confidence-aware decision boundary formulation, LCB thresholding, and uncertainty-aware state policy.</p>
+          <div class="team-card-header">
+            <div class="team-card-avatar">ND</div>
+            <div class="team-card-title-wrap">
+              <div class="team-name">Nandini Dhale</div>
+              <div class="team-role">Evolution Policy & Controller Specialist</div>
+            </div>
+          </div>
+          <div class="team-badge-row">
+            <span class="team-tag">Policy Specialist</span>
+            <span class="team-tag">Decision Theory</span>
+            <span class="team-tag">Uncertainty Modeling</span>
+          </div>
+          <p class="team-desc">
+            Formulates the tri-state evolution controller, decision boundary algorithms, and uncertainty-aware state transitions under incomplete feedback.
+          </p>
+          <div class="team-contrib-title">Key Responsibilities & Contributions</div>
+          <ul class="team-contrib-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Formulated tri-state controller policy (<code>ALLOW_EVOLUTION</code>, <code>REQUEST_MORE_EVIDENCE</code>, <code>DEFER_EVOLUTION</code>).</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Established Lower Confidence Bound (LCB) thresholding protocols to govern safe exploration boundaries.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Calibrated conservative tolerance bounds (&delta;) to protect incumbent harnesses from degradation.</span>
+            </li>
+          </ul>
+          <div class="team-card-footer">
+            <div class="team-module-chip">
+              <span class="pulsing-dot" style="width:6px; height:6px;"></span>
+              <span>Owner: Confidence Controller</span>
+            </div>
+            <div class="team-card-links">
+              <a href="#architecture" class="team-link-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Policy</span>
+              </a>
+            </div>
+          </div>
         </div>
 
         <!-- Author 4: Trupti Gondane -->
         <div class="team-card">
-          <div class="team-card-avatar">TG</div>
-          <div class="team-name">Trupti Gondane</div>
-          <div class="team-role">Telemetry & Knowledge Graphs</div>
-          <p class="team-desc">Knowledge graph failure attribution, evidence validation telemetry, and experimental dashboard analytics.</p>
+          <div class="team-card-header">
+            <div class="team-card-avatar">TG</div>
+            <div class="team-card-title-wrap">
+              <div class="team-name">Trupti Gondane</div>
+              <div class="team-role">Telemetry Analytics & Knowledge Graphs Lead</div>
+            </div>
+          </div>
+          <div class="team-badge-row">
+            <span class="team-tag">Knowledge Systems</span>
+            <span class="team-tag">Failure Attribution</span>
+            <span class="team-tag">Analytics Engine</span>
+          </div>
+          <p class="team-desc">
+            Engineers causal failure taxonomy, semantic trajectory pruning, and interactive experiment observability platforms for Evo-Agent.
+          </p>
+          <div class="team-contrib-title">Key Responsibilities & Contributions</div>
+          <ul class="team-contrib-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Extended <code>src/react_loop/knowledge_graph.py</code> with multi-factor causal failure attribution.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Built semantic trajectory pruning engine that injects negative constraints to eliminate duplicate failures.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Engineered experimental telemetry visualization dashboards and real-time Chart.js tracking metrics.</span>
+            </li>
+          </ul>
+          <div class="team-card-footer">
+            <div class="team-module-chip">
+              <span class="pulsing-dot" style="width:6px; height:6px;"></span>
+              <span>Owner: Knowledge & Analytics</span>
+            </div>
+            <div class="team-card-links">
+              <a href="#simulation" class="team-link-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>Telemetry</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Project Guide: Dr. Supriya Sawashere -->
+      <!-- Project Guide & Faculty Mentor: Dr. Supriya Sawashere -->
       <div class="guide-featured-card">
         <div class="guide-featured-avatar">SS</div>
         <div class="guide-info">
-          <div class="guide-designation">PROJECT GUIDE & FACULTY MENTOR</div>
-          <h3>Dr. Supriya Sawashere</h3>
-          <p class="guide-desc">
-            Academic supervision, research methodology guidance, experimental verification framework, and foundational advisory on autonomous self-improving AI agent architectures.
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:10px;">
+            <div>
+              <div class="guide-designation">PROJECT GUIDE & FACULTY MENTOR</div>
+              <h3 style="font-size:1.6rem; color:var(--palette-ice); font-weight:700; margin-bottom:4px;">Dr. Supriya Sawashere</h3>
+              <div style="font-size:0.88rem; color:var(--palette-powder); font-family:var(--font-mono);">
+                Faculty Supervisor • Department of Computer Science & Engineering
+              </div>
+            </div>
+            <span class="badge badge-primary">Research Supervision</span>
+          </div>
+
+          <p class="guide-desc" style="color:var(--palette-sky); font-size:0.94rem; line-height:1.65; margin-bottom:18px;">
+            Strategic research supervisor providing academic oversight, scientific methodology formulation, empirical rigor calibration, and statistical verification guidance for the Evo-Agent self-improving autonomous framework.
           </p>
+
+          <div class="guide-meta-grid">
+            <div>
+              <div class="guide-meta-item-title">Guidance Scope</div>
+              <div class="guide-meta-item-val">Algorithmic Safety, Statistical Error Bounds & Regression Prevention Protocol</div>
+            </div>
+            <div>
+              <div class="guide-meta-item-title">Research Domain</div>
+              <div class="guide-meta-item-val">Autonomous Agent Scaffolding, LLM Reasoning & Empirical Verification</div>
+            </div>
+            <div>
+              <div class="guide-meta-item-title">Academic Oversight</div>
+              <div class="guide-meta-item-val">Experimental Protocol Validation, Milestone Assessment & Publication Review</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2434,12 +2748,12 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
           <span class="badge badge-primary">GitHub ↗</span>
         </a>
 
-        <a href="https://github.com/TailinZhou/hsi" target="_blank" rel="noopener noreferrer" class="reference-card">
+        <a href="https://github.com/Mayank-Kamdi/Evo-Agent" target="_blank" rel="noopener noreferrer" class="reference-card">
           <div>
-            <div class="ref-title">HSI: Hierarchical Self-Improvement Agent Harness Implementation</div>
-            <div class="ref-meta">Upstream Base Framework • TailinZhou/hsi</div>
+            <div class="ref-title">Evo-Agent Architecture & Engine Specification</div>
+            <div class="ref-meta">Official Implementation • Mayank-Kamdi/Evo-Agent</div>
           </div>
-          <span class="badge badge-cyan">Upstream ↗</span>
+          <span class="badge badge-cyan">Repository ↗</span>
         </a>
 
         <a href="https://arxiv.org/abs/2411.13543" target="_blank" rel="noopener noreferrer" class="reference-card">
@@ -2493,8 +2807,8 @@ E = { episode_progressions, raw_trajectories, logs }</code></pre>
       </div>
 
       <div class="footer-bottom">
-        <span>© 2026 Evo-Agent Research Prototype • <a href="https://github.com/Mayank-Kamdi/Evo-Agent" target="_blank" rel="noopener noreferrer">Mayank-Kamdi/Evo-Agent</a></span>
-        <span>Upstream Framework: <a href="https://github.com/TailinZhou/hsi" target="_blank" rel="noopener noreferrer">TailinZhou/hsi</a></span>
+        <span>© 2026 Evo-Agent Research Project • <a href="https://github.com/Mayank-Kamdi/Evo-Agent" target="_blank" rel="noopener noreferrer">Mayank-Kamdi/Evo-Agent</a></span>
+        <span>Repository: <a href="https://github.com/Mayank-Kamdi/Evo-Agent" target="_blank" rel="noopener noreferrer">github.com/Mayank-Kamdi/Evo-Agent</a></span>
       </div>
     </div>
   </footer>

@@ -189,18 +189,12 @@ evolution_results/<suite>/run_<timestamp>/
 If you use HSI in your research, please cite the paper and the repository:
 
 ```bibtex
-@misc{zhou2026hsi,
-  title={Hierarchical Self-Improvement: A Framework for Task-Specific Evolvable Agent Harnesses},
-  author={Zhou, Tailin},
+@misc{kamdi2026evoagent,
+  title={Evo-Agent: Confidence-Aware Hierarchical Self-Improving Agents through Reliable Feedback and Regression-Aware Harness Evolution},
+  author={Mayank Kamdi and Sahil Somyani and Nandini Dhale and Trupti Gondane},
+  note={Under the guidance of Dr. Supriya Sawashere},
   year={2026},
-  note={arXiv preprint arXiv:2608.08466}
-}
-
-@misc{zhou2026hsi-code,
-  title={HSI: Hierarchical Self-Improvement Agent Harness},
-  author={Zhou, Tailin},
-  year={2026},
-  howpublished={\url{https://github.com/TailinZhou/hsi}}
+  howpublished={\url{https://github.com/Mayank-Kamdi/Evo-Agent}}
 }
 ```
 
