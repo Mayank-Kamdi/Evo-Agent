@@ -1,3 +1,11 @@
+# Evo-Agent: Confidence-Aware Hierarchical Self-Improving Agents
+
+> **Major Project**: Extending Hierarchical Self-Improvement (HSI) with reliable feedback estimation, regression-aware validation, and confidence-driven harness evolution.
+> 
+> **Aim**: Enable AI agents to safely and reliably rewrite their own task-execution harness around a frozen LLM backbone.
+
+---
+
 # Hierarchical Self-Improvement: A Framework for Task-Specific Evolvable Agent Harnesses
 
 
@@ -198,4 +206,4 @@ If you use HSI in your research, please cite the paper and the repository:
 
 ## License
 
-MIT
+MIT License (see [LICENSE](LICENSE))
